@@ -1,0 +1,13 @@
+{
+  "id": "P012",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "price",
+  "reason": "Il 14% della RAL (4.200 €) è troppo alto per un ragazzo uscito dall'università senza esperienza precedente.",
+  "objection": "Non voglio firmare contratti di esclusiva o mandati vincolanti prima di vedere i profili.",
+  "would_change_my_mind": "Una fee ridotta al 10% per i neolaureati o pagamento rateizzato.",
+  "price_too_cheap": 2050,
+  "price_cheap": 3300,
+  "price_expensive": 4400,
+  "price_too_expensive": 5900
+}

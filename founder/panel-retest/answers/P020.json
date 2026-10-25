@@ -1,0 +1,13 @@
+{
+  "id": "P020",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "Nonostante l'eccellente garanzia a 180 giorni, dobbiamo passare per l'accordo quadro della capogruppo.",
+  "objection": "Non voglio firmare contratti di esclusiva o mandati vincolanti prima di vedere i profili.",
+  "would_change_my_mind": "Accordo di secondo livello approvato da HR centrale.",
+  "price_too_cheap": 2150,
+  "price_cheap": 3350,
+  "price_expensive": 4150,
+  "price_too_expensive": 6350
+}

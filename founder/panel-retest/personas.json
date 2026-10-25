@@ -1,0 +1,222 @@
+[
+ {
+  "id": "P001",
+  "name": "Finn",
+  "age": 51,
+  "segment": "Managing Director / Owner (PMI Meccanica)",
+  "income": 143000,
+  "behaviour": "Hands-on Interviewer",
+  "behaviour_how": "Insists on testing candidates directly with real production scenarios before hiring.",
+  "objection": "Preferisco fargli fare un colloquio tecnico dal vivo con il mio capo reparto.",
+  "habit": "gestisci una linea produttiva con turni continui e problemi quotidiani di lead time"
+ },
+ {
+  "id": "P002",
+  "name": "Callum",
+  "age": 55,
+  "segment": "Plant Director (Mid-sized Manufacturing PMI)",
+  "income": 91000,
+  "behaviour": "Agency Skeptic",
+  "behaviour_how": "Frustrated with traditional recruiters sending generic CVs that fail basic plant calculations.",
+  "objection": "La garanzia a 90 giorni è ottima, ma che succede se il candidato se ne va al quarto mese?",
+  "habit": "hai vissuto almeno un fermo linea costato migliaia di euro per un errore di riordino scorte"
+ },
+ {
+  "id": "P003",
+  "name": "Lina",
+  "age": 54,
+  "segment": "Operations / Production Manager",
+  "income": 61000,
+  "behaviour": "Urgent Problem Solver",
+  "behaviour_how": "Has an immediate vacancy on the production line and needs someone operational this month.",
+  "objection": "Abbiamo già agenzie di recruiting convenzionate con l'ufficio HR.",
+  "habit": "ricevi ogni settimana 10 CV da HR con laureati che citano Lean e Kanban ma non sanno leggere una distinta base"
+ },
+ {
+  "id": "P004",
+  "name": "Hana",
+  "age": 52,
+  "segment": "Plant Director (Mid-sized Manufacturing PMI)",
+  "income": 127000,
+  "behaviour": "Risk & Margin Conscious",
+  "behaviour_how": "Scrutinizes placement fees; loves performance-based zero-upfront guarantees.",
+  "objection": "Preferisco fargli fare un colloquio tecnico dal vivo con il mio capo reparto.",
+  "habit": "gestisci una linea produttiva con turni continui e problemi quotidiani di lead time"
+ },
+ {
+  "id": "P005",
+  "name": "Aisha",
+  "age": 54,
+  "segment": "Supply Chain / Logistics Director",
+  "income": 85000,
+  "behaviour": "Risk & Margin Conscious",
+  "behaviour_how": "Scrutinizes placement fees; loves performance-based zero-upfront guarantees.",
+  "objection": "Non pago il 15% di RAL per un neolaureato junior con zero esperienza pratica in fabbrica.",
+  "habit": "gestisci una linea produttiva con turni continui e problemi quotidiani di lead time"
+ },
+ {
+  "id": "P006",
+  "name": "Sana",
+  "age": 46,
+  "segment": "Supply Chain / Logistics Director",
+  "income": 110000,
+  "behaviour": "Hands-on Interviewer",
+  "behaviour_how": "Insists on testing candidates directly with real production scenarios before hiring.",
+  "objection": "Non voglio firmare contratti di esclusiva o mandati vincolanti prima di vedere i profili.",
+  "habit": "partecipi alle riunioni di pianificazione della produzione del lunedì mattina"
+ },
+ {
+  "id": "P007",
+  "name": "Ezra",
+  "age": 42,
+  "segment": "Operations / Production Manager",
+  "income": 57000,
+  "behaviour": "Urgent Problem Solver",
+  "behaviour_how": "Has an immediate vacancy on the production line and needs someone operational this month.",
+  "objection": "Preferisco fargli fare un colloquio tecnico dal vivo con il mio capo reparto.",
+  "habit": "gestisci una linea produttiva con turni continui e problemi quotidiani di lead time"
+ },
+ {
+  "id": "P008",
+  "name": "Owen",
+  "age": 37,
+  "segment": "Managing Director / Owner (PMI Meccanica)",
+  "income": 141000,
+  "behaviour": "Risk & Margin Conscious",
+  "behaviour_how": "Scrutinizes placement fees; loves performance-based zero-upfront guarantees.",
+  "objection": "Non voglio firmare contratti di esclusiva o mandati vincolanti prima di vedere i profili.",
+  "habit": "gestisci una linea produttiva con turni continui e problemi quotidiani di lead time"
+ },
+ {
+  "id": "P009",
+  "name": "Jordan",
+  "age": 52,
+  "segment": "Plant Director (Mid-sized Manufacturing PMI)",
+  "income": 117000,
+  "behaviour": "Agency Skeptic",
+  "behaviour_how": "Frustrated with traditional recruiters sending generic CVs that fail basic plant calculations.",
+  "objection": "Come posso essere sicuro che il candidato non abbia usato ChatGPT per risolvere la simulazione?",
+  "habit": "usi LinkedIn per verificare i profili tecnici prima dei colloqui"
+ },
+ {
+  "id": "P010",
+  "name": "Farah",
+  "age": 52,
+  "segment": "Supply Chain / Logistics Director",
+  "income": 77000,
+  "behaviour": "Corporate Process Adherent",
+  "behaviour_how": "Normally relies on internal HR and approved staffing vendor lists.",
+  "objection": "Preferisco fargli fare un colloquio tecnico dal vivo con il mio capo reparto.",
+  "habit": "hai vissuto almeno un fermo linea costato migliaia di euro per un errore di riordino scorte"
+ },
+ {
+  "id": "P011",
+  "name": "Rosa",
+  "age": 48,
+  "segment": "Operations / Production Manager",
+  "income": 84000,
+  "behaviour": "Urgent Problem Solver",
+  "behaviour_how": "Has an immediate vacancy on the production line and needs someone operational this month.",
+  "objection": "Preferisco fargli fare un colloquio tecnico dal vivo con il mio capo reparto.",
+  "habit": "ricevi ogni settimana 10 CV da HR con laureati che citano Lean e Kanban ma non sanno leggere una distinta base"
+ },
+ {
+  "id": "P012",
+  "name": "Sara",
+  "age": 57,
+  "segment": "Supply Chain / Logistics Director",
+  "income": 84000,
+  "behaviour": "Urgent Problem Solver",
+  "behaviour_how": "Has an immediate vacancy on the production line and needs someone operational this month.",
+  "objection": "La garanzia a 90 giorni è ottima, ma che succede se il candidato se ne va al quarto mese?",
+  "habit": "partecipi alle riunioni di pianificazione della produzione del lunedì mattina"
+ },
+ {
+  "id": "P013",
+  "name": "Sienna",
+  "age": 49,
+  "segment": "Plant Director (Mid-sized Manufacturing PMI)",
+  "income": 124000,
+  "behaviour": "Urgent Problem Solver",
+  "behaviour_how": "Has an immediate vacancy on the production line and needs someone operational this month.",
+  "objection": "I giovani ingegneri dopo un anno lasciano la fabbrica di provincia per andare in consulenza.",
+  "habit": "gestisci una linea produttiva con turni continui e problemi quotidiani di lead time"
+ },
+ {
+  "id": "P014",
+  "name": "Luca",
+  "age": 42,
+  "segment": "Supply Chain / Logistics Director",
+  "income": 80000,
+  "behaviour": "Agency Skeptic",
+  "behaviour_how": "Frustrated with traditional recruiters sending generic CVs that fail basic plant calculations.",
+  "objection": "Abbiamo già agenzie di recruiting convenzionate con l'ufficio HR.",
+  "habit": "gestisci una linea produttiva con turni continui e problemi quotidiani di lead time"
+ },
+ {
+  "id": "P015",
+  "name": "Oscar",
+  "age": 53,
+  "segment": "Plant Director (Mid-sized Manufacturing PMI)",
+  "income": 105000,
+  "behaviour": "Hands-on Interviewer",
+  "behaviour_how": "Insists on testing candidates directly with real production scenarios before hiring.",
+  "objection": "Preferisco fargli fare un colloquio tecnico dal vivo con il mio capo reparto.",
+  "habit": "ricevi ogni settimana 10 CV da HR con laureati che citano Lean e Kanban ma non sanno leggere una distinta base"
+ },
+ {
+  "id": "P016",
+  "name": "Rohan",
+  "age": 35,
+  "segment": "Operations / Production Manager",
+  "income": 57000,
+  "behaviour": "Agency Skeptic",
+  "behaviour_how": "Frustrated with traditional recruiters sending generic CVs that fail basic plant calculations.",
+  "objection": "La garanzia a 90 giorni è ottima, ma che succede se il candidato se ne va al quarto mese?",
+  "habit": "gestisci una linea produttiva con turni continui e problemi quotidiani di lead time"
+ },
+ {
+  "id": "P017",
+  "name": "Maya",
+  "age": 42,
+  "segment": "Plant Director (Mid-sized Manufacturing PMI)",
+  "income": 79000,
+  "behaviour": "Risk & Margin Conscious",
+  "behaviour_how": "Scrutinizes placement fees; loves performance-based zero-upfront guarantees.",
+  "objection": "Non pago il 15% di RAL per un neolaureato junior con zero esperienza pratica in fabbrica.",
+  "habit": "partecipi alle riunioni di pianificazione della produzione del lunedì mattina"
+ },
+ {
+  "id": "P018",
+  "name": "Pablo",
+  "age": 37,
+  "segment": "Supply Chain / Logistics Director",
+  "income": 93000,
+  "behaviour": "Corporate Process Adherent",
+  "behaviour_how": "Normally relies on internal HR and approved staffing vendor lists.",
+  "objection": "Abbiamo già agenzie di recruiting convenzionate con l'ufficio HR.",
+  "habit": "usi LinkedIn per verificare i profili tecnici prima dei colloqui"
+ },
+ {
+  "id": "P019",
+  "name": "Marco",
+  "age": 41,
+  "segment": "Plant Director (Mid-sized Manufacturing PMI)",
+  "income": 105000,
+  "behaviour": "Agency Skeptic",
+  "behaviour_how": "Frustrated with traditional recruiters sending generic CVs that fail basic plant calculations.",
+  "objection": "La garanzia a 90 giorni è ottima, ma che succede se il candidato se ne va al quarto mese?",
+  "habit": "hai vissuto almeno un fermo linea costato migliaia di euro per un errore di riordino scorte"
+ },
+ {
+  "id": "P020",
+  "name": "Jasper",
+  "age": 53,
+  "segment": "Plant Director (Mid-sized Manufacturing PMI)",
+  "income": 101000,
+  "behaviour": "Corporate Process Adherent",
+  "behaviour_how": "Normally relies on internal HR and approved staffing vendor lists.",
+  "objection": "Non voglio firmare contratti di esclusiva o mandati vincolanti prima di vedere i profili.",
+  "habit": "usi LinkedIn per verificare i profili tecnici prima dei colloqui"
+ }
+]

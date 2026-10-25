@@ -1,0 +1,13 @@
+{
+  "id": "P015",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Ho paura che i candidati abbiano usato ChatGPT per risolvere la prova a casa o che il test non rifletta la sporcizia reale dell'officina.",
+  "objection": "La garanzia a 90 giorni è ottima, ma che succede se il candidato se ne va al quarto mese?",
+  "would_change_my_mind": "Una registrazione video o garanzia di anti-cheat certificata sull'ambiente di test.",
+  "price_too_cheap": 1900,
+  "price_cheap": 3200,
+  "price_expensive": 4400,
+  "price_too_expensive": 5700
+}

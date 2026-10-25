@@ -1,0 +1,13 @@
+{
+  "id": "P053",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "quality",
+  "reason": "Nessun test al computer di 25 minuti può dirmi se uno sa parlare con gli operai o gestire lo stress del turno notturno.",
+  "objection": "Preferisco fargli fare un colloquio tecnico dal vivo con il mio capo reparto.",
+  "would_change_my_mind": "Un colloquio tecnico strutturato svolto direttamente dal vivo in fabbrica.",
+  "price_too_cheap": 1900,
+  "price_cheap": 3250,
+  "price_expensive": 4600,
+  "price_too_expensive": 6300
+}

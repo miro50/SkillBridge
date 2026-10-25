@@ -1,0 +1,26 @@
+{
+  "business": "SkillBridge (Operational Assessment & Recruitment for Supply Chain)",
+  "unit": "successful placement",
+  "price": 4200.0,
+  "variable": [
+    {"label": "Candidate academic check & vetting", "cost": 60.0},
+    {"label": "LLM evaluation pipeline & cloud server", "cost": 40.0},
+    {"label": "Contracting, legal & invoicing admin", "cost": 60.0},
+    {"label": "180-day warranty replacement reserve", "cost": 100.0}
+  ],
+  "fixed_monthly": [
+    {"label": "SaaS infrastructure (Supabase, Resend, Vercel)", "cost": 150.0},
+    {"label": "Outreach & prospecting tools (LinkedIn Sales Nav)", "cost": 150.0},
+    {"label": "Founder living stipend / working workspace", "cost": 2200.0},
+    {"label": "Accounting, tax & insurance", "cost": 200.0}
+  ],
+  "startup": [
+    {"label": "Legal representation agreement drafting", "cost": 1000.0},
+    {"label": "Domain, branding & security setup", "cost": 300.0},
+    {"label": "University campus partnerships & promotional kits", "cost": 500.0}
+  ],
+  "days_per_month": 1,
+  "capacity_per_day": 6,
+  "plan_per_day": 3,
+  "ramp_per_day": [1, 1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 4]
+}

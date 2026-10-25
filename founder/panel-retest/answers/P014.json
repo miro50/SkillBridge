@@ -1,0 +1,13 @@
+{
+  "id": "P014",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "timing",
+  "reason": "Nonostante l'eccellente garanzia a 180 giorni, dobbiamo passare per l'accordo quadro della capogruppo.",
+  "objection": "Abbiamo già agenzie di recruiting convenzionate con l'ufficio HR.",
+  "would_change_my_mind": "Accordo di secondo livello approvato da HR centrale.",
+  "price_too_cheap": 2050,
+  "price_cheap": 2750,
+  "price_expensive": 4250,
+  "price_too_expensive": 6400
+}

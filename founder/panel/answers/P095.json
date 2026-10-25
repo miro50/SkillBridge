@@ -1,0 +1,13 @@
+{
+  "id": "P095",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "quality",
+  "reason": "Nessun test al computer di 25 minuti può dirmi se uno sa parlare con gli operai o gestire lo stress del turno notturno.",
+  "objection": "Non voglio firmare contratti di esclusiva o mandati vincolanti prima di vedere i profili.",
+  "would_change_my_mind": "Un colloquio tecnico strutturato svolto direttamente dal vivo in fabbrica.",
+  "price_too_cheap": 1650,
+  "price_cheap": 3000,
+  "price_expensive": 4400,
+  "price_too_expensive": 5800
+}

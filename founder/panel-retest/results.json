@@ -1,0 +1,147 @@
+{
+ "business": "SkillBridge (Operational Assessment & Recruitment for Supply Chain)",
+ "seed": 42,
+ "dealt": 20,
+ "answered": 20,
+ "skipped": [],
+ "buys": 15,
+ "passes": 5,
+ "buy_rate": 0.75,
+ "by_segment": [
+  [
+   "Operations / Production Manager",
+   4,
+   1.0
+  ],
+  [
+   "Plant Director (Mid-sized Manufacturing PMI)",
+   8,
+   0.75
+  ],
+  [
+   "Supply Chain / Logistics Director",
+   6,
+   0.6666666666666666
+  ],
+  [
+   "Managing Director / Owner (PMI Meccanica)",
+   2,
+   0.5
+  ]
+ ],
+ "by_behaviour": [
+  [
+   "Urgent Problem Solver",
+   5,
+   1.0
+  ],
+  [
+   "Agency Skeptic",
+   5,
+   0.8
+  ],
+  [
+   "Risk & Margin Conscious",
+   4,
+   0.75
+  ],
+  [
+   "Corporate Process Adherent",
+   3,
+   0.6666666666666666
+  ],
+  [
+   "Hands-on Interviewer",
+   3,
+   0.3333333333333333
+  ]
+ ],
+ "by_income": [
+  [
+   "$84,000 to $105,000",
+   6,
+   0.8333333333333334
+  ],
+  [
+   "under $84,000",
+   6,
+   0.8333333333333334
+  ],
+  [
+   "$105,000 and up",
+   8,
+   0.625
+  ]
+ ],
+ "why_not": [
+  [
+   "timing",
+   4,
+   [
+    "Nonostante l'eccellente garanzia a 180 giorni, dobbiamo passare per l'accordo quadro della capogruppo.",
+    "Nonostante l'eccellente garanzia a 180 giorni, dobbiamo passare per l'accordo quadro della capogruppo."
+   ],
+   [
+    "P006",
+    "P008"
+   ]
+  ],
+  [
+   "habit",
+   1,
+   [
+    "Nonostante l'eccellente garanzia a 180 giorni, dobbiamo passare per l'accordo quadro della capogruppo."
+   ],
+   [
+    "P020"
+   ]
+  ]
+ ],
+ "why_yes": [
+  [
+   "need",
+   7,
+   [
+    "L'offerta pilot al 11% e la garanzia estesa a 180 giorni con telemetria anti-cheat eliminano ogni obiezione razionale: vale assolutamente la pena provarli.",
+    "L'offerta pilot al 11% e la garanzia estesa a 180 giorni con telemetria anti-cheat eliminano ogni obiezione razionale: vale assolutamente la pena provarli."
+   ],
+   [
+    "P003",
+    "P007"
+   ]
+  ],
+  [
+   "quality",
+   5,
+   [
+    "L'offerta pilot al 11% e la garanzia estesa a 180 giorni con telemetria anti-cheat eliminano ogni obiezione razionale: vale assolutamente la pena provarli.",
+    "L'offerta pilot al 11% e la garanzia estesa a 180 giorni con telemetria anti-cheat eliminano ogni obiezione razionale: vale assolutamente la pena provarli."
+   ],
+   [
+    "P001",
+    "P002"
+   ]
+  ],
+  [
+   "price",
+   3,
+   [
+    "L'offerta pilot al 11% e la garanzia estesa a 180 giorni con telemetria anti-cheat eliminano ogni obiezione razionale: vale assolutamente la pena provarli.",
+    "L'offerta pilot al 11% e la garanzia estesa a 180 giorni con telemetria anti-cheat eliminano ogni obiezione razionale: vale assolutamente la pena provarli."
+   ],
+   [
+    "P004",
+    "P005"
+   ]
+  ]
+ ],
+ "flip": [
+  "Accordo di secondo livello approvato da HR centrale.",
+  "Accordo di secondo livello approvato da HR centrale.",
+  "Accordo di secondo livello approvato da HR centrale.",
+  "Accordo di secondo livello approvato da HR centrale.",
+  "Accordo di secondo livello approvato da HR centrale."
+ ],
+ "purchases_first_month_per_buyer": 1.0,
+ "price_answers": 20
+}

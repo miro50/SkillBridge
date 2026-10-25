@@ -1,0 +1,7 @@
+# SkillBridge
+
+- What it is: Performance-vetted recruitment wedge and operational assessment engine for Supply Chain & Operations talent.
+- Who it is for: Plant Directors, Operations Managers, and Supply Chain Directors at manufacturing and logistics companies (structured Italian SMEs and mid-sized industrial enterprises in Lombardy, Emilia-Romagna, and Veneto) seeking junior/entry-level operations talent without wrong-hire risks.
+- What it sells, at what price: 3 pre-vetted junior/graduate candidates proven through an interactive 25-minute operational simulation of factory bottlenecks and inventory trade-offs, sold on a 100% "Guarantee-per-Hire" success fee of 12% to 15% of first-year gross annual salary (RAL) (~€3,600 - €4,500 for a €30,000 RAL), invoiced at 90 days only if the candidate successfully completes their probation period.
+- Where and how: Online assessment platform with founder-led boutique placement service across Northern Italy. Candidates acquired via direct university partnerships (PoliMi, PoliTo, PoliBa, UNIBO) and ITS Logistics academies. B2B clients reached via direct founder outbound on LinkedIn to Plant & Operations Directors.
+- Budget and constraints: Bootstrapped / pre-product by a Management Engineering founder; €0 paid acquisition budget; 3-week pragmatic build for the simulation engine; zero upfront software licensing fee for clients (pure contingency recruitment wedge).

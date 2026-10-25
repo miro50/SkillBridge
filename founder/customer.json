@@ -1,0 +1,35 @@
+{
+  "business": "SkillBridge (Operational Assessment & Recruitment for Supply Chain)",
+  "target": "Plant Directors, Operations Directors, and Supply Chain Managers at Italian manufacturing and logistics companies",
+  "where": "Northern Italy (Lombardy, Emilia-Romagna, Veneto)",
+  "age": [35, 58],
+  "segments": [
+    {"name": "Plant Director (Mid-sized Manufacturing PMI)", "share": 0.40, "income": [75000, 130000]},
+    {"name": "Supply Chain / Logistics Director", "share": 0.30, "income": [70000, 115000]},
+    {"name": "Operations / Production Manager", "share": 0.20, "income": [55000, 85000]},
+    {"name": "Managing Director / Owner (PMI Meccanica)", "share": 0.10, "income": [90000, 160000]}
+  ],
+  "behaviours": [
+    {"name": "Urgent Problem Solver", "share": 0.25, "how": "Has an immediate vacancy on the production line and needs someone operational this month."},
+    {"name": "Agency Skeptic", "share": 0.25, "how": "Frustrated with traditional recruiters sending generic CVs that fail basic plant calculations."},
+    {"name": "Risk & Margin Conscious", "share": 0.20, "how": "Scrutinizes placement fees; loves performance-based zero-upfront guarantees."},
+    {"name": "Hands-on Interviewer", "share": 0.15, "how": "Insists on testing candidates directly with real production scenarios before hiring."},
+    {"name": "Corporate Process Adherent", "share": 0.15, "how": "Normally relies on internal HR and approved staffing vendor lists."}
+  ],
+  "objections": [
+    "Non pago il 15% di RAL per un neolaureato junior con zero esperienza pratica in fabbrica.",
+    "Come posso essere sicuro che il candidato non abbia usato ChatGPT per risolvere la simulazione?",
+    "Abbiamo già agenzie di recruiting convenzionate con l'ufficio HR.",
+    "I giovani ingegneri dopo un anno lasciano la fabbrica di provincia per andare in consulenza.",
+    "Preferisco fargli fare un colloquio tecnico dal vivo con il mio capo reparto.",
+    "La garanzia a 90 giorni è ottima, ma che succede se il candidato se ne va al quarto mese?",
+    "Non voglio firmare contratti di esclusiva o mandati vincolanti prima di vedere i profili."
+  ],
+  "habits": [
+    "gestisci una linea produttiva con turni continui e problemi quotidiani di lead time",
+    "ricevi ogni settimana 10 CV da HR con laureati che citano Lean e Kanban ma non sanno leggere una distinta base",
+    "partecipi alle riunioni di pianificazione della produzione del lunedì mattina",
+    "usi LinkedIn per verificare i profili tecnici prima dei colloqui",
+    "hai vissuto almeno un fermo linea costato migliaia di euro per un errore di riordino scorte"
+  ]
+}
