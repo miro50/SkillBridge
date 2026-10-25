@@ -231,6 +231,115 @@ class InMemoryStore {
   sessions = new Map<string, AssessmentSession>();
   evaluations = new Map<string, AssessmentEvaluation>();
 
+  constructor() {
+    this.seedDefaultData();
+  }
+
+  seedDefaultData() {
+    const session1Id = '11111111-1111-4111-8111-111111111111';
+    const session1: AssessmentSession = {
+      id: session1Id,
+      token: 'demo-candidate-1',
+      candidate_name: 'Marco Rossi',
+      candidate_email: 'marco.rossi@polimi.it',
+      scenario_id: 'valvola-v104',
+      status: 'pending',
+      started_at: null,
+      submitted_at: null,
+      telemetry: { blur_count: 0, paste_count: 0, time_spent_seconds: 0 },
+      raw_answers: null,
+      created_at: new Date().toISOString(),
+    };
+
+    const session2Id = '22222222-2222-4222-8222-222222222222';
+    const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+    const session2: AssessmentSession = {
+      id: session2Id,
+      token: 'demo-candidate-2',
+      candidate_name: 'Giulia Bianchi',
+      candidate_email: 'giulia.bianchi@unibo.it',
+      scenario_id: 'valvola-v104',
+      status: 'in_progress',
+      started_at: tenMinutesAgo,
+      submitted_at: null,
+      telemetry: { blur_count: 1, paste_count: 0, time_spent_seconds: 600 },
+      raw_answers: {
+        stockoutDay: 9,
+        downtimeDays: 5,
+        expeditedOrderQty: 200,
+        decisionMemo: 'Analisi iniziale completata. Si valuta lotto di emergenza...',
+      },
+      created_at: tenMinutesAgo,
+    };
+
+    const session3Id = '33333333-3333-4333-8333-333333333333';
+    const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString();
+    const eightMinutesAgo = new Date(Date.now() - 8 * 60 * 1000).toISOString();
+    const session3: AssessmentSession = {
+      id: session3Id,
+      token: 'demo-candidate-3',
+      candidate_name: 'Alessandro Ferrari',
+      candidate_email: 'a.ferrari@polito.it',
+      scenario_id: 'valvola-v104',
+      status: 'submitted',
+      started_at: thirtyMinutesAgo,
+      submitted_at: eightMinutesAgo,
+      telemetry: { blur_count: 1, paste_count: 0, time_spent_seconds: 1320 },
+      raw_answers: {
+        stockoutDay: 9,
+        downtimeDays: 5,
+        expeditedOrderQty: 200,
+        calculatedExtraCost: 7000,
+        calculatedDowntimeCost: 48000,
+        decisionMemo:
+          "Priorità assoluta alla continuità operativa della Linea Montaggio 2: l'extra-costo di 7.000 € copre interamente il fabbisogno azzerando il rischio di 5 giorni di fermo linea da 48.000 €.",
+      },
+      created_at: thirtyMinutesAgo,
+    };
+
+    const evaluation3Id = 'eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee';
+    const evaluation3: AssessmentEvaluation = {
+      id: evaluation3Id,
+      session_id: session3Id,
+      deterministic_score: 65,
+      deterministic_breakdown: {
+        stockoutDayScore: 15,
+        stockoutDayMax: 15,
+        downtimeDaysScore: 10,
+        downtimeDaysMax: 10,
+        downtimeCostScore: 10,
+        downtimeCostMax: 10,
+        reorderQtyScore: 20,
+        reorderQtyMax: 20,
+        extraCostScore: 10,
+        extraCostMax: 15,
+        details: { note: 'Tutti i calcoli principali accurati; minima varianza arrotondamento extra-costo.' },
+      },
+      llm_score: 23,
+      llm_breakdown: {
+        costTradeoffScore: 5,
+        riskAwarenessScore: 4,
+        clarityAndSynthesis: 4,
+        normalizedScore: 23,
+        details: { summary: 'Eccellente analisi del trade-off tra extra-costo ed ore di fermo.' },
+      },
+      llm_feedback:
+        'Decisione rapida e solida. Ha coperto il deficit azzerando il rischio fermo linea con rigorosa attenzione ai costi di fermo.',
+      total_score: 88,
+      reviewer_override_score: null,
+      reviewer_notes: null,
+      recommendation_badge: 'consigliato',
+      interview_requested_at: null,
+      reviewer_feedback: null,
+      created_at: eightMinutesAgo,
+    };
+
+    this.sessions.set(session1Id, session1);
+    this.sessions.set(session2Id, session2);
+    this.sessions.set(session3Id, session3);
+    this.evaluations.set(evaluation3Id, evaluation3);
+  }
+
   clear() {
     this.sessions.clear();
     this.evaluations.clear();
