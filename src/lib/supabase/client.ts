@@ -630,3 +630,155 @@ export async function requestInterview(sessionId: string, notes?: string): Promi
   }
   return null;
 }
+
+export interface SessionWithEvaluation {
+  session: AssessmentSession;
+  evaluation: AssessmentEvaluation | null;
+}
+
+export async function listAllSessions(): Promise<SessionWithEvaluation[]> {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from('assessment_sessions')
+      .select('*, assessment_evaluations(*)')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('[Supabase] Error listing sessions:', error.message);
+      return [];
+    }
+
+    return (data || []).map((row: any) => {
+      const evaluation = Array.isArray(row.assessment_evaluations)
+        ? row.assessment_evaluations[0] || null
+        : row.assessment_evaluations || null;
+
+      const session: AssessmentSession = {
+        id: row.id,
+        token: row.token,
+        candidate_name: row.candidate_name,
+        candidate_email: row.candidate_email,
+        scenario_id: row.scenario_id,
+        status: row.status,
+        started_at: row.started_at,
+        submitted_at: row.submitted_at,
+        telemetry: row.telemetry,
+        raw_answers: row.raw_answers,
+        created_at: row.created_at,
+      };
+
+      return { session, evaluation };
+    });
+  }
+
+  // In-memory fallback
+  const results: SessionWithEvaluation[] = [];
+  for (const session of inMemoryStore.sessions.values()) {
+    let evaluation: AssessmentEvaluation | null = null;
+    for (const ev of inMemoryStore.evaluations.values()) {
+      if (ev.session_id === session.id) {
+        evaluation = ev;
+        break;
+      }
+    }
+    results.push({ session, evaluation });
+  }
+
+  results.sort(
+    (a, b) => new Date(b.session.created_at).getTime() - new Date(a.session.created_at).getTime()
+  );
+
+  return results;
+}
+
+export async function createCandidateSession(params: {
+  candidate_name: string;
+  candidate_email: string;
+  scenario_id?: string;
+  customToken?: string;
+}): Promise<AssessmentSession> {
+  const token =
+    params.customToken?.trim() ||
+    `cand-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+  const scenario_id = params.scenario_id || 'valvola-v104';
+
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from('assessment_sessions')
+      .insert({
+        token,
+        candidate_name: params.candidate_name.trim(),
+        candidate_email: params.candidate_email.trim().toLowerCase(),
+        scenario_id,
+        status: 'pending',
+        telemetry: { blur_count: 0, paste_count: 0, time_spent_seconds: 0 },
+        raw_answers: null,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('[Supabase] Error creating session:', error.message);
+      throw new Error(`Failed to create candidate session: ${error.message}`);
+    }
+
+    return data as unknown as AssessmentSession;
+  }
+
+  // In-memory store
+  const id = crypto.randomUUID();
+  const session: AssessmentSession = {
+    id,
+    token,
+    candidate_name: params.candidate_name.trim(),
+    candidate_email: params.candidate_email.trim().toLowerCase(),
+    scenario_id,
+    status: 'pending',
+    started_at: null,
+    submitted_at: null,
+    telemetry: { blur_count: 0, paste_count: 0, time_spent_seconds: 0 },
+    raw_answers: null,
+    created_at: new Date().toISOString(),
+  };
+
+  inMemoryStore.sessions.set(id, session);
+  return session;
+}
+
+export async function updateEvaluationOverride(
+  sessionId: string,
+  overrideScore: number | null,
+  notes: string | null
+): Promise<AssessmentEvaluation | null> {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from('assessment_evaluations')
+      .update({
+        reviewer_override_score: overrideScore,
+        reviewer_notes: notes || null,
+      })
+      .eq('session_id', sessionId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('[Supabase] Error updating override:', error.message);
+      return null;
+    }
+
+    return (data as unknown as AssessmentEvaluation) ?? null;
+  }
+
+  for (const evaluation of inMemoryStore.evaluations.values()) {
+    if (evaluation.session_id === sessionId) {
+      evaluation.reviewer_override_score = overrideScore;
+      if (notes !== null) evaluation.reviewer_notes = notes;
+      return evaluation;
+    }
+  }
+
+  return null;
+}

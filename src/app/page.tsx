@@ -93,6 +93,13 @@ export default function HomePage() {
               <BarChart3 className="w-3.5 h-3.5" />
               <span>Demo Scorecard</span>
             </Link>
+            <Link
+              href="/admin"
+              className="px-2.5 py-1.5 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 transition-colors text-xs font-mono"
+              title="Accesso Founder Cockpit"
+            >
+              Admin
+            </Link>
           </nav>
         </div>
       </header>
@@ -601,6 +608,14 @@ export default function HomePage() {
                     className="hover:text-blue-400 transition-colors"
                   >
                     Candidate Briefing Room
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/admin"
+                    className="hover:text-amber-400 transition-colors text-slate-400"
+                  >
+                    Founder Operations Cockpit
                   </Link>
                 </li>
               </ul>
