@@ -230,6 +230,7 @@ export function getSupabaseClient(): SupabaseClient<any> | null {
 class InMemoryStore {
   sessions = new Map<string, AssessmentSession>();
   evaluations = new Map<string, AssessmentEvaluation>();
+  leads = new Map<string, CompanyLead>();
 
   constructor() {
     this.seedDefaultData();
@@ -343,6 +344,7 @@ class InMemoryStore {
   clear() {
     this.sessions.clear();
     this.evaluations.clear();
+    this.leads.clear();
   }
 }
 
@@ -781,4 +783,87 @@ export async function updateEvaluationOverride(
   }
 
   return null;
+}
+
+export interface CompanyLead {
+  id: string;
+  contact_name: string;
+  company_name: string;
+  email: string;
+  phone?: string;
+  province?: string;
+  role?: string;
+  role_needed?: string;
+  estimated_ral?: number;
+  notes?: string;
+  created_at: string;
+}
+
+export async function createCompanyLead(
+  lead: Omit<CompanyLead, 'id' | 'created_at'>
+): Promise<CompanyLead> {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from('company_leads')
+      .insert({
+        contact_name: lead.contact_name.trim(),
+        company_name: lead.company_name.trim(),
+        email: lead.email.trim().toLowerCase(),
+        phone: lead.phone?.trim() || null,
+        province: lead.province?.trim() || null,
+        role: lead.role?.trim() || null,
+        role_needed: lead.role_needed?.trim() || null,
+        estimated_ral: lead.estimated_ral || null,
+        notes: lead.notes?.trim() || null,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('[Supabase] Error creating lead:', error.message);
+      throw new Error(`Failed to create lead: ${error.message}`);
+    }
+
+    return data as unknown as CompanyLead;
+  }
+
+  const id = crypto.randomUUID();
+  const createdLead: CompanyLead = {
+    id,
+    contact_name: lead.contact_name.trim(),
+    company_name: lead.company_name.trim(),
+    email: lead.email.trim().toLowerCase(),
+    phone: lead.phone?.trim() || undefined,
+    province: lead.province?.trim() || undefined,
+    role: lead.role?.trim() || undefined,
+    role_needed: lead.role_needed?.trim() || undefined,
+    estimated_ral: lead.estimated_ral || undefined,
+    notes: lead.notes?.trim() || undefined,
+    created_at: new Date().toISOString(),
+  };
+
+  inMemoryStore.leads.set(id, createdLead);
+  return createdLead;
+}
+
+export async function listAllLeads(): Promise<CompanyLead[]> {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from('company_leads')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('[Supabase] Error listing leads:', error.message);
+      return [];
+    }
+
+    return (data || []) as unknown as CompanyLead[];
+  }
+
+  const list = Array.from(inMemoryStore.leads.values());
+  list.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  return list;
 }

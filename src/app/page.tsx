@@ -68,6 +68,12 @@ export default function HomePage() {
           </div>
 
           <nav className="flex items-center gap-2 sm:gap-4 text-xs font-medium">
+            <Link
+              href="/aziende"
+              className="text-blue-400 hover:text-white font-semibold transition-colors px-2 py-1 border border-blue-900/60 rounded bg-blue-950/40"
+            >
+              Per Aziende & ROI
+            </Link>
             <a
               href="#metodo"
               className="text-slate-400 hover:text-white transition-colors hidden md:inline-block px-2 py-1"
@@ -191,7 +197,16 @@ export default function HomePage() {
                     <span>Apri Scorecard Dimostrativa Completa</span>
                     <ArrowRight className="w-4 h-4" />
                   </Link>
-                  <p className="text-[11px] text-slate-500 text-center mt-2.5">
+                  <div className="mt-2 text-center">
+                    <Link
+                      href="/aziende"
+                      className="text-xs text-blue-400 hover:text-blue-300 font-semibold inline-flex items-center gap-1 transition-colors"
+                    >
+                      <span>Sei un&apos;azienda? Calcola il ROI & Richiedi Candidati</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </Link>
+                  </div>
+                  <p className="text-[11px] text-slate-500 text-center mt-2">
                     Nessuna registrazione richiesta • Report stampabile 1-page A4
                   </p>
                 </div>
@@ -586,6 +601,14 @@ export default function HomePage() {
                 Scorciatoie Demo
               </div>
               <ul className="space-y-2 text-xs">
+                <li>
+                  <Link
+                    href="/aziende"
+                    className="hover:text-blue-400 transition-colors text-blue-400 font-medium"
+                  >
+                    Portale Aziende & Calcolatore ROI
+                  </Link>
+                </li>
                 <li>
                   <Link
                     href="/scorecard/33333333-3333-4333-8333-333333333333"

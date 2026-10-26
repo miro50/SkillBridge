@@ -22,10 +22,11 @@ import {
   ChevronRight,
   Factory
 } from 'lucide-react';
-import { SessionWithEvaluation } from '@/lib/supabase/client';
+import { SessionWithEvaluation, CompanyLead } from '@/lib/supabase/client';
 
 export default function AdminPage() {
   const [sessions, setSessions] = useState<SessionWithEvaluation[]>([]);
+  const [leads, setLeads] = useState<CompanyLead[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -54,18 +55,27 @@ export default function AdminPage() {
   const [overrideNotes, setOverrideNotes] = useState<string>('');
   const [isSavingOverride, setIsSavingOverride] = useState<boolean>(false);
 
-  // Fetch all sessions
+  // Fetch all sessions and leads
   const fetchSessions = async () => {
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch('/api/admin/sessions');
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || 'Errore nel caricamento dei dati');
+      const [sessionsRes, leadsRes] = await Promise.all([
+        fetch('/api/admin/sessions'),
+        fetch('/api/admin/leads'),
+      ]);
+
+      if (!sessionsRes.ok) {
+        const err = await sessionsRes.json().catch(() => ({}));
+        throw new Error(err.error || 'Errore nel caricamento dei dati sessioni');
       }
-      const data = await res.json();
-      setSessions(data.sessions || []);
+      const sessionsData = await sessionsRes.json();
+      setSessions(sessionsData.sessions || []);
+
+      if (leadsRes.ok) {
+        const leadsData = await leadsRes.json();
+        setLeads(leadsData.leads || []);
+      }
     } catch (err: any) {
       setError(err.message || 'Impossibile connettersi al server');
     } finally {
@@ -163,8 +173,10 @@ export default function AdminPage() {
       (s) => s.evaluation?.recommendation_badge === 'consigliato'
     ).length;
 
-    return { total, pending, inProgress, submitted, interviewRequests, recommended };
-  }, [sessions]);
+    const b2bLeads = leads.length;
+
+    return { total, pending, inProgress, submitted, interviewRequests, recommended, b2bLeads };
+  }, [sessions, leads]);
 
   // Filtered Sessions
   const filteredSessions = useMemo(() => {
@@ -263,7 +275,7 @@ export default function AdminPage() {
       {/* Main Container */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-6">
         {/* KPI Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
           <div className="bg-slate-900 border border-slate-800 rounded-lg p-3.5">
             <div className="text-[11px] font-mono uppercase text-slate-400">Totale Inviti</div>
             <div className="text-2xl font-bold font-mono text-white mt-1">{kpis.total}</div>
@@ -295,6 +307,13 @@ export default function AdminPage() {
             <div className="text-[11px] font-mono uppercase text-indigo-400">Colloqui Richiesti</div>
             <div className="text-2xl font-bold font-mono text-indigo-400 mt-1">
               {kpis.interviewRequests}
+            </div>
+          </div>
+
+          <div className="bg-slate-900 border border-blue-800/80 rounded-lg p-3.5">
+            <div className="text-[11px] font-mono uppercase text-sky-400">Richieste B2B</div>
+            <div className="text-2xl font-bold font-mono text-sky-300 mt-1">
+              {kpis.b2bLeads}
             </div>
           </div>
         </div>
@@ -585,6 +604,81 @@ export default function AdminPage() {
                       </tr>
                     );
                   })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* B2B Inbound Requests Table */}
+        <div className="bg-slate-900 border border-slate-800 rounded-lg overflow-hidden shadow-lg mt-8">
+          <div className="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/80">
+            <div className="flex items-center gap-2">
+              <Factory className="w-4 h-4 text-sky-400" />
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider font-mono">
+                Richieste Candidati B2B da Direttori di Stabilimento & HR ({leads.length})
+              </h3>
+            </div>
+            <Link
+              href="/aziende"
+              target="_blank"
+              className="text-xs text-blue-400 hover:text-blue-300 font-mono inline-flex items-center gap-1"
+            >
+              <span>Vedi Landing Page Aziende</span>
+              <ExternalLink className="w-3 h-3" />
+            </Link>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-slate-950/60 border-b border-slate-800 text-slate-400 uppercase font-mono text-[10px] tracking-wider">
+                <tr>
+                  <th className="py-3 px-4">Referente & Ruolo</th>
+                  <th className="py-3 px-4">Azienda & Provincia</th>
+                  <th className="py-3 px-4">Email & Telefono</th>
+                  <th className="py-3 px-4">Profilo Ricercato & RAL</th>
+                  <th className="py-3 px-4">Data Richiesta</th>
+                  <th className="py-3 px-4">Note Aziendali</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800">
+                {leads.length === 0 && (
+                  <tr>
+                    <td colSpan={6} className="py-8 text-center text-slate-500 font-mono text-xs">
+                      Nessuna richiesta B2B ricevuta finora. I lead inviati da /aziende appariranno qui.
+                    </td>
+                  </tr>
+                )}
+
+                {leads.map((lead) => (
+                  <tr key={lead.id} className="hover:bg-slate-800/40 transition-colors">
+                    <td className="py-3.5 px-4">
+                      <div className="font-semibold text-white">{lead.contact_name}</div>
+                      <div className="text-[11px] text-slate-400">{lead.role || 'Referente'}</div>
+                    </td>
+                    <td className="py-3.5 px-4">
+                      <div className="font-semibold text-white">{lead.company_name}</div>
+                      <div className="text-[11px] text-slate-400 font-mono">
+                        Prov. {lead.province || 'N.D.'}
+                      </div>
+                    </td>
+                    <td className="py-3.5 px-4 font-mono text-[11px]">
+                      <div className="text-blue-400">{lead.email}</div>
+                      <div className="text-slate-400">{lead.phone || '-'}</div>
+                    </td>
+                    <td className="py-3.5 px-4">
+                      <div className="font-medium text-white">{lead.role_needed}</div>
+                      <div className="text-[11px] text-emerald-400 font-mono">
+                        RAL ~{lead.estimated_ral ? lead.estimated_ral.toLocaleString('it-IT') + ' €' : 'N.D.'}
+                      </div>
+                    </td>
+                    <td className="py-3.5 px-4 text-slate-400 font-mono text-[11px]">
+                      {new Date(lead.created_at).toLocaleString('it-IT')}
+                    </td>
+                    <td className="py-3.5 px-4 text-slate-300 text-xs italic max-w-xs truncate">
+                      {lead.notes || '-'}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

@@ -52,7 +52,26 @@ CREATE TABLE IF NOT EXISTS assessment_evaluations (
 CREATE INDEX IF NOT EXISTS idx_assessment_evaluations_session ON assessment_evaluations(session_id);
 
 -- ============================================================================
--- 3. Funzioni Atomiche Condizionali (D2 - Atomic Updates & Anti-Double-Submit)
+-- 3. Tabella Richieste Aziende B2B / Lead Direttori di Stabilimento (company_leads)
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS company_leads (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  contact_name TEXT NOT NULL,
+  company_name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone TEXT,
+  province TEXT,
+  role TEXT,
+  role_needed TEXT,
+  estimated_ral INT,
+  notes TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_company_leads_created_at ON company_leads(created_at DESC);
+
+-- ============================================================================
+-- 4. Funzioni Atomiche Condizionali (D2 - Atomic Updates & Anti-Double-Submit)
 -- ============================================================================
 
 -- Avvio sessione atomico: aggiorna solo se lo stato attuale è 'pending'

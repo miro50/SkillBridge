@@ -29,7 +29,24 @@ export interface InterviewRequestedPayload {
   timestamp: string;
 }
 
-export type FounderAlertPayload = AssessmentCompletedPayload | InterviewRequestedPayload;
+export interface LeadCreatedPayload {
+  event: 'lead_created';
+  contact_name: string;
+  company_name: string;
+  email: string;
+  phone?: string;
+  province?: string;
+  role?: string;
+  role_needed?: string;
+  estimated_ral?: number;
+  notes?: string;
+  timestamp: string;
+}
+
+export type FounderAlertPayload =
+  | AssessmentCompletedPayload
+  | InterviewRequestedPayload
+  | LeadCreatedPayload;
 
 export interface DispatchOptions {
   webhookUrl?: string;
@@ -87,6 +104,47 @@ export function formatWebhookBody(payload: FounderAlertPayload, targetUrl: strin
     };
   }
 
+  if (payload.event === 'lead_created') {
+    return {
+      content: `🏭 **Nuova Richiesta Candidati B2B (Programma Pilota 11%)!**`,
+      embeds: [
+        {
+          title: `${payload.company_name} — Richiesta Profili Pre-Testati`,
+          description: `Un Direttore di Stabilimento o Responsabile HR ha richiesto candidati con garanzia 90 giorni.`,
+          color: 0x2563eb, // Industrial Blue
+          fields: [
+            {
+              name: 'Contatto & Ruolo',
+              value: `${payload.contact_name} (${payload.role || 'Non specificato'})`,
+              inline: true,
+            },
+            {
+              name: 'Azienda & Provincia',
+              value: `${payload.company_name} (${payload.province || 'N.D.'})`,
+              inline: true,
+            },
+            {
+              name: 'Email & Telefono',
+              value: `${payload.email} • ${payload.phone || 'N.D.'}`,
+              inline: false,
+            },
+            {
+              name: 'Profilo Ricercato & RAL',
+              value: `${payload.role_needed || 'Supply Chain / Operations'} • RAL ~${payload.estimated_ral ? payload.estimated_ral.toLocaleString('it-IT') + ' €' : 'N.D.'}`,
+              inline: false,
+            },
+            {
+              name: 'Note Aziendali',
+              value: payload.notes || 'Nessuna nota specificata',
+              inline: false,
+            },
+          ],
+          footer: { text: `SkillBridge Inbound B2B • ${payload.timestamp}` },
+        },
+      ],
+    };
+  }
+
   // payload.event === 'interview_requested'
   return {
     content: `🤝 **Richiesta Colloquio dal Plant Director!**`,
@@ -126,7 +184,10 @@ export async function dispatchFounderAlert(
   payload: FounderAlertPayload,
   options: DispatchOptions = {}
 ): Promise<boolean> {
-  const webhookUrl = options.webhookUrl ?? process.env.FOUNDER_WEBHOOK_URL;
+  const webhookUrl =
+    options.webhookUrl ??
+    process.env.FOUNDER_ALERT_WEBHOOK_URL ??
+    process.env.FOUNDER_WEBHOOK_URL;
   const timeoutMs = options.timeoutMs ?? 2500;
   const fetchImpl = options.fetchFn ?? fetch;
 
