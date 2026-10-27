@@ -762,8 +762,8 @@ export default function AziendeLandingPage() {
                       <option value="Buyer Tecnico & Procurement Specialist (Modulo E-501)">
                         Buyer Tecnico & Procurement Specialist (Modulo E-501)
                       </option>
-                      <option value="Junior Process & Continuous Improvement Engineer">
-                        Junior Process & Continuous Improvement Engineer
+                      <option value="Junior Process & Continuous Improvement Engineer (Modulo M-300)">
+                        Junior Process & Continuous Improvement Engineer (Modulo M-300)
                       </option>
                     </select>
                   </div>

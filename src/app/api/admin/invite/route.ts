@@ -59,6 +59,11 @@ export async function POST(request: NextRequest) {
         name: 'Scheda E-501',
         focus: 'valutazione del mercato spot e gestione dei rischi di approvvigionamento',
       },
+      'process-m300': {
+        role: 'Junior Process & Lean Continuous Improvement Engineer',
+        name: 'Motore Brushless M-300',
+        focus: 'bilanciamento linea robotizzata, bottleneck e continuità OEE',
+      },
     };
 
     const scMeta = scenarioDescriptions[session.scenario_id] || scenarioDescriptions['valvola-v104'];

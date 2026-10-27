@@ -8,12 +8,13 @@ import {
 import { evaluateDeterministic, type CandidateSupplyChainAnswers } from '../deterministic';
 
 describe('Multi-Scenario Catalog & Parametric Generator', () => {
-  it('should list all 3 standard industrial scenarios in SCENARIO_CATALOG', () => {
-    expect(SCENARIO_CATALOG).toHaveLength(3);
+  it('should list all 4 standard industrial scenarios in SCENARIO_CATALOG', () => {
+    expect(SCENARIO_CATALOG).toHaveLength(4);
     const ids = SCENARIO_CATALOG.map((s) => s.id);
     expect(ids).toContain('valvola-v104');
     expect(ids).toContain('packaging-p200');
     expect(ids).toContain('scheda-e501');
+    expect(ids).toContain('process-m300');
 
     for (const item of SCENARIO_CATALOG) {
       expect(item.title).toBeTruthy();
@@ -66,6 +67,30 @@ describe('Multi-Scenario Catalog & Parametric Generator', () => {
     // Verify extra-cost logic for spot broker
     const expectedPremiumPerUnit = s1.expeditedSupplier.unitCost - s1.primarySupplier.unitCost;
     expect(s1.expectedExtraCost).toBe(expectedPremiumPerUnit * s1.expectedReorderQty);
+
+    const answers: CandidateSupplyChainAnswers = {
+      stockoutDay: s1.expectedStockoutDay,
+      downtimeDays: s1.expectedDowntimeDays,
+      downtimeCost: s1.expectedDowntimeCost,
+      reorderQty: s1.expectedReorderQty,
+      extraCost: s1.expectedExtraCost,
+    };
+    const evalResult = evaluateDeterministic(answers, s1);
+    expect(evalResult.score).toBe(70);
+  });
+
+  it('should generate reproducible scenarios for process-m300 with lean manufacturing domain parameters', () => {
+    const token = 'token-process-lean-88';
+    const s1 = generateScenarioFromToken(token, 'process-m300');
+    const s2 = generateScenarioFromToken(token, 'process-m300');
+
+    expect(s1).toEqual(s2);
+    expect(s1.id).toBe('process-m300');
+    expect(s1.expeditedSupplier.batchSize).toBe(150);
+    expect(s1.downtimeCostPerHour).toBe(2100);
+    expect([60, 75, 90]).toContain(s1.dailyConsumption);
+    expect([7, 8, 9]).toContain(s1.expectedStockoutDay);
+    expect(s1.expectedReorderQty % 150).toBe(0);
 
     const answers: CandidateSupplyChainAnswers = {
       stockoutDay: s1.expectedStockoutDay,

@@ -350,10 +350,26 @@ class InMemoryStore {
       created_at: new Date().toISOString(),
     };
 
+    const session5Id = '55555555-5555-4555-8555-555555555555';
+    const session5: AssessmentSession = {
+      id: session5Id,
+      token: 'demo-candidate-5',
+      candidate_name: 'Matteo Rinaldi',
+      candidate_email: 'm.rinaldi@polimi.it',
+      scenario_id: 'process-m300',
+      status: 'pending',
+      started_at: null,
+      submitted_at: null,
+      telemetry: { blur_count: 0, paste_count: 0, time_spent_seconds: 0 },
+      raw_answers: null,
+      created_at: new Date().toISOString(),
+    };
+
     this.sessions.set(session1Id, session1);
     this.sessions.set(session2Id, session2);
     this.sessions.set(session3Id, session3);
     this.sessions.set(session4Id, session4);
+    this.sessions.set(session5Id, session5);
     this.evaluations.set(evaluation3Id, evaluation3);
   }
 

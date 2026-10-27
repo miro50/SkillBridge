@@ -63,7 +63,7 @@ export interface ScenarioCatalogItem {
   id: string;
   title: string;
   role: string;
-  category: 'supply_chain' | 'production_planning' | 'procurement';
+  category: 'supply_chain' | 'production_planning' | 'procurement' | 'lean_process';
   difficulty: 'Intermedio' | 'Avanzato';
   partNumber: string;
   productionLine: string;
@@ -111,6 +111,19 @@ export const SCENARIO_CATALOG: ScenarioCatalogItem[] = [
       'Allocazione globale silicio, reperimento spot broker da 100 pezzi per evitare il blocco totale della linea SMT da 1.800 €/h.',
     primarySupplier: 'SiliconTech Electronics B.V.',
     downtimeCostPerHour: 1800,
+  },
+  {
+    id: 'process-m300',
+    title: 'Bilanciamento Linea & Collo di Bottiglia Motore Brushless M-300',
+    role: 'Junior Process & Lean Continuous Improvement Engineer',
+    category: 'lean_process',
+    difficulty: 'Avanzato',
+    partNumber: 'ROT-M300',
+    productionLine: 'Isola Robotizzata Lavorazione & Collaudo 4',
+    summary:
+      'Guasto rettificatrice fornitore alberi rotore M-300, 18 giorni di lead time, lotto rapido CNC da 150 pezzi e trade-off fermo isola robotizzata da 2.100 €/h.',
+    primarySupplier: 'PrecisionMachining Meccanica S.r.l.',
+    downtimeCostPerHour: 2100,
   },
 ];
 
@@ -310,6 +323,71 @@ function generateElectronicsScenario(positiveHash: number): SupplyChainScenarioC
 }
 
 /**
+ * Scenario 4: Process M-300 (Junior Process & Lean Continuous Improvement)
+ */
+function generateProcessScenario(positiveHash: number): SupplyChainScenarioConfig {
+  const consumptions = [60, 75, 90];
+  const dailyConsumption = consumptions[positiveHash % consumptions.length];
+
+  const multipliers = [7, 8, 9];
+  const stockMultiplier = multipliers[Math.floor(positiveHash / 10) % multipliers.length];
+  const initialStock = dailyConsumption * stockMultiplier;
+
+  const expeditedCosts = [120, 130, 140];
+  const unitCostExpedited = expeditedCosts[Math.floor(positiveHash / 100) % expeditedCosts.length];
+
+  const standardUnitCost = 75;
+  const standardLeadTime = 8;
+  const disruptedLeadTime = 18;
+  const expeditedLeadTime = 3;
+  const batchSize = 150;
+  const downtimeCostPerHour = 2100;
+  const shiftHoursPerDay = 8;
+  const safetyStock = 120;
+
+  const expectedStockoutDay = initialStock / dailyConsumption;
+  const expectedDowntimeDays = Math.max(0, disruptedLeadTime - expectedStockoutDay);
+  const expectedDowntimeHours = expectedDowntimeDays * shiftHoursPerDay;
+  const expectedDowntimeCost = expectedDowntimeHours * downtimeCostPerHour;
+
+  const unitsNeeded = expectedDowntimeDays * dailyConsumption;
+  const expectedReorderQty = Math.max(batchSize, Math.ceil(unitsNeeded / batchSize) * batchSize);
+  const expectedExtraCost = (unitCostExpedited - standardUnitCost) * expectedReorderQty;
+
+  return {
+    id: 'process-m300',
+    title: 'Bilanciamento Linea & Collo di Bottiglia Motore Brushless M-300',
+    role: 'Junior Process & Lean Continuous Improvement Engineer',
+    shortDescription: 'Collo di bottiglia e ritardo fornitura alberi rotore M-300 su isola robotizzata di assemblaggio e collaudo.',
+    partNumber: 'ROT-M300',
+    productionLine: 'Isola Robotizzata Lavorazione & Collaudo 4',
+    initialStock,
+    dailyConsumption,
+    safetyStock,
+    primarySupplier: {
+      name: 'PrecisionMachining Meccanica S.r.l.',
+      standardLeadTimeDays: standardLeadTime,
+      disruptedLeadTimeDays: disruptedLeadTime,
+      unitCost: standardUnitCost,
+    },
+    expeditedSupplier: {
+      name: 'RapidCNC Swiss Precision',
+      leadTimeDays: expeditedLeadTime,
+      unitCost: unitCostExpedited,
+      batchSize,
+    },
+    downtimeCostPerHour,
+    shiftHoursPerDay,
+    expectedStockoutDay,
+    expectedDowntimeDays,
+    expectedDowntimeHours,
+    expectedDowntimeCost,
+    expectedReorderQty,
+    expectedExtraCost,
+  };
+}
+
+/**
  * Generates deterministic scenario parameters based on a candidate's session token and scenario ID.
  * Defaults to 'valvola-v104' for backwards compatibility.
  */
@@ -330,6 +408,10 @@ export function generateScenarioFromToken(
 
   if (scenarioId === 'scheda-e501') {
     return generateElectronicsScenario(positiveHash);
+  }
+
+  if (scenarioId === 'process-m300') {
+    return generateProcessScenario(positiveHash);
   }
 
   // Default: valvola-v104

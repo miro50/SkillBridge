@@ -457,6 +457,8 @@ export default function AdminPage() {
                                 ? 'P-200 Packaging'
                                 : session.scenario_id === 'scheda-e501'
                                 ? 'E-501 SMT Buyer'
+                                : session.scenario_id === 'process-m300'
+                                ? 'M-300 Process Lean'
                                 : 'V-104 Supply Chain'}
                             </span>
                             <span className="text-[10px] text-slate-600">

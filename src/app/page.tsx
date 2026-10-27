@@ -123,7 +123,7 @@ export default function HomePage() {
                   Scenari Attivi:
                 </span>
                 <span className="font-semibold text-slate-200">
-                  Supply Chain (V-104) • MRP Planning (P-200) • Buyer Tecnico (E-501)
+                  Supply Chain (V-104) • MRP Planning (P-200) • Buyer Tecnico (E-501) • Lean Process (M-300)
                 </span>
               </div>
             </div>
@@ -275,7 +275,7 @@ export default function HomePage() {
                   {/* Demo Tokens Pills */}
                   <div>
                     <span className="text-[11px] font-mono text-slate-500 block mb-1.5">
-                      Sessioni demo pre-generate nei 3 domini operativi:
+                      Sessioni demo pre-generate nei 4 domini operativi:
                     </span>
                     <div className="flex flex-wrap gap-2">
                       <button
@@ -298,6 +298,13 @@ export default function HomePage() {
                         className="px-2.5 py-1 rounded bg-slate-950 hover:bg-slate-800 border border-sky-900/60 text-[11px] font-mono text-sky-400 hover:text-sky-300 transition-colors"
                       >
                         demo-candidate-4 (E-501 Buyer Tecnico)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => selectPresetToken('demo-candidate-5')}
+                        className="px-2.5 py-1 rounded bg-slate-950 hover:bg-slate-800 border border-amber-900/60 text-[11px] font-mono text-amber-400 hover:text-amber-300 transition-colors"
+                      >
+                        demo-candidate-5 (M-300 Process Lean)
                       </button>
                     </div>
                   </div>
@@ -421,7 +428,7 @@ export default function HomePage() {
                 CATALOGO TEST MULTI-RUOLO • SPEC-002
               </span>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-white mt-3 uppercase tracking-tight">
-                3 Simulazioni Tecniche per le Figure Chiave di Fabbrica
+                4 Simulazioni Tecniche per le Figure Chiave di Fabbrica
               </h2>
               <p className="text-sm text-slate-400 mt-2 leading-relaxed">
                 Ogni modulo mette il candidato davanti a un caso reale con dati numerici generati
@@ -429,7 +436,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {/* Scenario 1: Valvola V-104 */}
               <div className="bg-slate-900 border border-slate-800 hover:border-blue-700/60 transition-all rounded-lg p-6 flex flex-col justify-between shadow-lg">
                 <div>
@@ -557,6 +564,50 @@ export default function HomePage() {
                     className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded bg-sky-950/80 hover:bg-sky-900/80 text-sky-300 border border-sky-800/80 text-xs font-semibold transition-colors"
                   >
                     <span>Lancia Test Scheda E-501</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Scenario 4: Process M-300 */}
+              <div className="bg-slate-900 border border-slate-800 hover:border-amber-700/60 transition-all rounded-lg p-6 flex flex-col justify-between shadow-lg">
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-mono text-[11px] font-bold text-amber-400 bg-amber-950/80 px-2 py-0.5 rounded border border-amber-900">
+                      MODULO SKB-M300
+                    </span>
+                    <span className="text-[10px] font-mono uppercase text-slate-500">25 MIN CRONOMETRATI</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-1">
+                    Bilanciamento Linea Motore M-300
+                  </h3>
+                  <div className="text-xs text-amber-400 font-semibold mb-3">
+                    Junior Process & Lean Engineer
+                  </div>
+                  <p className="text-xs text-slate-400 leading-relaxed mb-4">
+                    Guasto rettificatrice albero rotore M-300 con 18 giorni di ritardo fornitore. Il candidato
+                    calcola il trade-off fermo isola robotizzata da 2.100 €/h, lotto rapido CNC e piano SMED/kaizen.
+                  </p>
+
+                  <div className="space-y-2 py-3 border-t border-slate-800 text-xs">
+                    <div className="flex items-center justify-between text-slate-300">
+                      <span className="text-slate-500">Dossier:</span>
+                      <span className="font-mono text-[11px]">OEE, Isola Robotizzata 4, Rapid CNC</span>
+                    </div>
+                    <div className="flex items-center justify-between text-slate-300">
+                      <span className="text-slate-500">Benchmark:</span>
+                      <span className="font-mono text-[11px] text-amber-400">70 pt Det. + 30 pt Sem.</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-slate-800 mt-4">
+                  <button
+                    type="button"
+                    onClick={() => selectPresetToken('demo-candidate-5')}
+                    className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded bg-amber-950/80 hover:bg-amber-900/80 text-amber-300 border border-amber-800/80 text-xs font-semibold transition-colors"
+                  >
+                    <span>Lancia Test Motore M-300</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -717,6 +768,14 @@ export default function HomePage() {
                     className="hover:text-sky-400 transition-colors"
                   >
                     Test E-501: Buyer Tecnico & Sourcing
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/assessment/demo-candidate-5"
+                    className="hover:text-amber-400 transition-colors"
+                  >
+                    Test M-300: Process & Lean Engineer
                   </Link>
                 </li>
                 <li>
