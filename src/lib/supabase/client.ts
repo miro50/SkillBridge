@@ -1,4 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { SCENARIO_CATALOG } from '@/lib/assessment/parametric';
 
 // ============================================================================
 // TypeScript Domain Types for SkillBridge Supabase Database
@@ -406,6 +407,30 @@ export async function findSessionByToken(token: string): Promise<AssessmentSessi
   for (const session of inMemoryStore.sessions.values()) {
     if (session.token === token) return session;
   }
+
+  // Auto-provision demo sessions on-the-fly for any valid scenario ID
+  if (token.startsWith('demo-')) {
+    const rawScenarioId = token.replace(/^demo-/, '');
+    const sc = SCENARIO_CATALOG.find((s) => s.id === rawScenarioId);
+    if (sc) {
+      const dynamicDemoSession: AssessmentSession = {
+        id: `demo-id-${sc.id}`,
+        token,
+        candidate_name: `Candidato Demo (${sc.role.split(' ')[0]})`,
+        candidate_email: `demo.${sc.id}@skillbridge.internal`,
+        scenario_id: sc.id,
+        status: 'pending',
+        started_at: null,
+        submitted_at: null,
+        telemetry: { blur_count: 0, paste_count: 0, time_spent_seconds: 0 },
+        raw_answers: null,
+        created_at: new Date().toISOString(),
+      };
+      inMemoryStore.sessions.set(dynamicDemoSession.id, dynamicDemoSession);
+      return dynamicDemoSession;
+    }
+  }
+
   return null;
 }
 

@@ -20,13 +20,20 @@ import {
   Activity,
   Layers,
   FileText,
-  BadgeAlert
+  BadgeAlert,
+  Sliders,
+  Boxes,
+  Zap,
 } from 'lucide-react';
+import { SCENARIO_CATALOG } from '@/lib/assessment/parametric';
 
 export default function HomePage() {
   const router = useRouter();
   const [tokenInput, setTokenInput] = useState<string>('');
   const [tokenError, setTokenError] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<
+    'supply_chain' | 'production_planning' | 'procurement' | 'lean_process'
+  >('supply_chain');
 
   const handleLaunchAssessment = (e: React.FormEvent) => {
     e.preventDefault();
@@ -120,10 +127,10 @@ export default function HomePage() {
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-xs text-slate-300">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="font-mono text-slate-400 uppercase tracking-wider text-[11px]">
-                  Scenari Attivi:
+                  20 Scenari Attivi:
                 </span>
                 <span className="font-semibold text-slate-200">
-                  Supply Chain (V-104) • MRP Planning (P-200) • Buyer Tecnico (E-501) • Lean Process (M-300)
+                  5 Supply Chain • 5 Pianificazione MRP • 5 Buyer Tecnico • 5 Process & Lean
                 </span>
               </div>
             </div>
@@ -420,198 +427,135 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Deep Dive: Multi-Scenario Industrial Showcase */}
+        {/* Deep Dive: Multi-Scenario Industrial Showcase (20 Scenari) */}
         <section id="scenari" className="py-20 border-b border-slate-800 bg-slate-900/40">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-3xl mb-12">
+            <div className="max-w-3xl mb-10">
               <span className="text-xs font-mono uppercase tracking-widest text-blue-400 bg-blue-950/80 px-2.5 py-1 rounded border border-blue-900">
-                CATALOGO TEST MULTI-RUOLO • SPEC-002
+                CATALOGO TEST MULTI-RUOLO • 20 SIMULAZIONI ATTIVE
               </span>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-white mt-3 uppercase tracking-tight">
-                4 Simulazioni Tecniche per le Figure Chiave di Fabbrica
+                20 Simulazioni Tecniche nei 4 Ruoli Chiave di Fabbrica
               </h2>
               <p className="text-sm text-slate-400 mt-2 leading-relaxed">
-                Ogni modulo mette il candidato davanti a un caso reale con dati numerici generati
+                5 scenari operativi distinti per ogni posizione. Dati numerici generati
                 deterministicamente anti-copia, vincoli stringenti di MOQ/Lead Time e grading trasparente 0-100.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {/* Scenario 1: Valvola V-104 */}
-              <div className="bg-slate-900 border border-slate-800 hover:border-blue-700/60 transition-all rounded-lg p-6 flex flex-col justify-between shadow-lg">
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="font-mono text-[11px] font-bold text-blue-400 bg-blue-950/80 px-2 py-0.5 rounded border border-blue-900">
-                      MODULO SKB-V104
-                    </span>
-                    <span className="text-[10px] font-mono uppercase text-slate-500">25 MIN CRONOMETRATI</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-1">
-                    Fermo Linea Valvola V-104
-                  </h3>
-                  <div className="text-xs text-blue-400 font-semibold mb-3">
-                    Supply Chain & Operations Specialist
-                  </div>
-                  <p className="text-xs text-slate-400 leading-relaxed mb-4">
-                    Rottura improvvisa della fornitura di O-Ring NBR-70 su Linea 2 Montaggio con ritardo di 12 giorni.
-                    Il candidato deve calcolare lo stockout day esatto, le ore di fermo impianto e il lotto di reintegro MOQ.
-                  </p>
+            {/* Category Filter Tabs */}
+            <div className="flex flex-wrap gap-2.5 mb-8">
+              <button
+                type="button"
+                onClick={() => setSelectedCategory('supply_chain')}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-mono transition-all ${
+                  selectedCategory === 'supply_chain'
+                    ? 'bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/20'
+                    : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800 hover:border-slate-700'
+                }`}
+              >
+                <Factory className="w-4 h-4" />
+                <span>Supply Chain & Operations (5)</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedCategory('production_planning')}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-mono transition-all ${
+                  selectedCategory === 'production_planning'
+                    ? 'bg-emerald-600 text-white font-bold shadow-lg shadow-emerald-600/20'
+                    : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800 hover:border-slate-700'
+                }`}
+              >
+                <Boxes className="w-4 h-4" />
+                <span>Pianificazione MRP & MPS (5)</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedCategory('procurement')}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-mono transition-all ${
+                  selectedCategory === 'procurement'
+                    ? 'bg-sky-600 text-white font-bold shadow-lg shadow-sky-600/20'
+                    : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800 hover:border-slate-700'
+                }`}
+              >
+                <Cpu className="w-4 h-4" />
+                <span>Buyer Tecnico & Procurement (5)</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedCategory('lean_process')}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-mono transition-all ${
+                  selectedCategory === 'lean_process'
+                    ? 'bg-amber-600 text-white font-bold shadow-lg shadow-amber-600/20'
+                    : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800 hover:border-slate-700'
+                }`}
+              >
+                <Zap className="w-4 h-4" />
+                <span>Process & Lean Engineer (5)</span>
+              </button>
+            </div>
 
-                  <div className="space-y-2 py-3 border-t border-slate-800 text-xs">
-                    <div className="flex items-center justify-between text-slate-300">
-                      <span className="text-slate-500">Dossier:</span>
-                      <span className="font-mono text-[11px]">BOM, ERP Stock, Ritardo Fornitore</span>
-                    </div>
-                    <div className="flex items-center justify-between text-slate-300">
-                      <span className="text-slate-500">Benchmark:</span>
-                      <span className="font-mono text-[11px] text-blue-400">70 pt Det. + 30 pt Sem.</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-slate-800 mt-4">
-                  <button
-                    type="button"
-                    onClick={() => selectPresetToken('demo-candidate-1')}
-                    className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded bg-blue-950/80 hover:bg-blue-900/80 text-blue-300 border border-blue-800/80 text-xs font-semibold transition-colors"
+            {/* Active Category 5 Scenarios Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {SCENARIO_CATALOG.filter((sc) => sc.category === selectedCategory).map((sc) => {
+                const code = sc.id.split('-')[1]?.toUpperCase() || 'V104';
+                return (
+                  <div
+                    key={sc.id}
+                    className="bg-slate-900 border border-slate-800 hover:border-slate-700 transition-all rounded-lg p-5 flex flex-col justify-between shadow-lg"
                   >
-                    <span>Lancia Test Valvola V-104</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="font-mono text-[11px] font-bold text-blue-400 bg-blue-950/80 px-2 py-0.5 rounded border border-blue-900">
+                          SKB-{code}
+                        </span>
+                        <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-slate-950 text-slate-400 border border-slate-800">
+                          {sc.difficulty} • 25 MIN
+                        </span>
+                      </div>
+                      <h3 className="text-base font-bold text-white mb-1.5 leading-snug">
+                        {sc.title}
+                      </h3>
+                      <div className="text-xs text-slate-300 font-semibold mb-3">
+                        {sc.role}
+                      </div>
+                      <p className="text-xs text-slate-400 leading-relaxed mb-4">
+                        {sc.summary}
+                      </p>
 
-              {/* Scenario 2: Packaging P-200 */}
-              <div className="bg-slate-900 border border-slate-800 hover:border-emerald-700/60 transition-all rounded-lg p-6 flex flex-col justify-between shadow-lg">
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="font-mono text-[11px] font-bold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-900">
-                      MODULO SKB-P200
-                    </span>
-                    <span className="text-[10px] font-mono uppercase text-slate-500">25 MIN CRONOMETRATI</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-1">
-                    Riprogrammazione MRP Packaging P-200
-                  </h3>
-                  <div className="text-xs text-emerald-400 font-semibold mb-3">
-                    Production Planner & MRP Specialist
-                  </div>
-                  <p className="text-xs text-slate-400 leading-relaxed mb-4">
-                    Slittamento consegna bobine alluminio per camera bianca packaging. Il candidato deve riprogrammare
-                    il piano di produzione, calcolare il buffer ore perse e valutare il batching pallet da 500 unità.
-                  </p>
-
-                  <div className="space-y-2 py-3 border-t border-slate-800 text-xs">
-                    <div className="flex items-center justify-between text-slate-300">
-                      <span className="text-slate-500">Dossier:</span>
-                      <span className="font-mono text-[11px]">MPS, Lotto Pallet, Fabbisogno Netto</span>
+                      <div className="space-y-1.5 py-3 border-t border-slate-800 text-xs">
+                        <div className="flex items-center justify-between text-slate-300">
+                          <span className="text-slate-500">Componente:</span>
+                          <span className="font-mono text-[11px] text-white">{sc.partNumber}</span>
+                        </div>
+                        <div className="flex items-center justify-between text-slate-300">
+                          <span className="text-slate-500">Reparto:</span>
+                          <span className="font-mono text-[11px] text-slate-300 truncate max-w-[180px]">
+                            {sc.productionLine}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between text-slate-300">
+                          <span className="text-slate-500">Danno Fermo:</span>
+                          <span className="font-mono text-[11px] text-rose-400 font-bold">
+                            {sc.downtimeCostPerHour.toLocaleString('it-IT')} €/h
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex items-center justify-between text-slate-300">
-                      <span className="text-slate-500">Benchmark:</span>
-                      <span className="font-mono text-[11px] text-emerald-400">70 pt Det. + 30 pt Sem.</span>
-                    </div>
-                  </div>
-                </div>
 
-                <div className="pt-4 border-t border-slate-800 mt-4">
-                  <button
-                    type="button"
-                    onClick={() => selectPresetToken('demo-candidate-2')}
-                    className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded bg-emerald-950/80 hover:bg-emerald-900/80 text-emerald-300 border border-emerald-800/80 text-xs font-semibold transition-colors"
-                  >
-                    <span>Lancia Test Packaging P-200</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Scenario 3: Scheda E-501 */}
-              <div className="bg-slate-900 border border-slate-800 hover:border-sky-700/60 transition-all rounded-lg p-6 flex flex-col justify-between shadow-lg">
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="font-mono text-[11px] font-bold text-sky-400 bg-sky-950/80 px-2 py-0.5 rounded border border-sky-900">
-                      MODULO SKB-E501
-                    </span>
-                    <span className="text-[10px] font-mono uppercase text-slate-500">25 MIN CRONOMETRATI</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-1">
-                    Allocazione Globale MCU E-501
-                  </h3>
-                  <div className="text-xs text-sky-400 font-semibold mb-3">
-                    Buyer Tecnico & Procurement Specialist
-                  </div>
-                  <p className="text-xs text-slate-400 leading-relaxed mb-4">
-                    Allocazione semiconduttori MCU su scheda automotive e offerta urgente spot broker. Il candidato
-                    calcola il trade-off economico tra extra-costo e fermo collaudo, gestendo conformità e tracciabilità.
-                  </p>
-
-                  <div className="space-y-2 py-3 border-t border-slate-800 text-xs">
-                    <div className="flex items-center justify-between text-slate-300">
-                      <span className="text-slate-500">Dossier:</span>
-                      <span className="font-mono text-[11px]">Broker Spot, Certificati RoHS, Tracciabilità</span>
-                    </div>
-                    <div className="flex items-center justify-between text-slate-300">
-                      <span className="text-slate-500">Benchmark:</span>
-                      <span className="font-mono text-[11px] text-sky-400">70 pt Det. + 30 pt Sem.</span>
+                    <div className="pt-3 border-t border-slate-800 mt-3">
+                      <button
+                        type="button"
+                        onClick={() => selectPresetToken(`demo-${sc.id}`)}
+                        className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold transition-colors"
+                      >
+                        <span>Lancia Test {sc.partNumber}</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
                     </div>
                   </div>
-                </div>
-
-                <div className="pt-4 border-t border-slate-800 mt-4">
-                  <button
-                    type="button"
-                    onClick={() => selectPresetToken('demo-candidate-4')}
-                    className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded bg-sky-950/80 hover:bg-sky-900/80 text-sky-300 border border-sky-800/80 text-xs font-semibold transition-colors"
-                  >
-                    <span>Lancia Test Scheda E-501</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Scenario 4: Process M-300 */}
-              <div className="bg-slate-900 border border-slate-800 hover:border-amber-700/60 transition-all rounded-lg p-6 flex flex-col justify-between shadow-lg">
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="font-mono text-[11px] font-bold text-amber-400 bg-amber-950/80 px-2 py-0.5 rounded border border-amber-900">
-                      MODULO SKB-M300
-                    </span>
-                    <span className="text-[10px] font-mono uppercase text-slate-500">25 MIN CRONOMETRATI</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-1">
-                    Bilanciamento Linea Motore M-300
-                  </h3>
-                  <div className="text-xs text-amber-400 font-semibold mb-3">
-                    Junior Process & Lean Engineer
-                  </div>
-                  <p className="text-xs text-slate-400 leading-relaxed mb-4">
-                    Guasto rettificatrice albero rotore M-300 con 18 giorni di ritardo fornitore. Il candidato
-                    calcola il trade-off fermo isola robotizzata da 2.100 €/h, lotto rapido CNC e piano SMED/kaizen.
-                  </p>
-
-                  <div className="space-y-2 py-3 border-t border-slate-800 text-xs">
-                    <div className="flex items-center justify-between text-slate-300">
-                      <span className="text-slate-500">Dossier:</span>
-                      <span className="font-mono text-[11px]">OEE, Isola Robotizzata 4, Rapid CNC</span>
-                    </div>
-                    <div className="flex items-center justify-between text-slate-300">
-                      <span className="text-slate-500">Benchmark:</span>
-                      <span className="font-mono text-[11px] text-amber-400">70 pt Det. + 30 pt Sem.</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-slate-800 mt-4">
-                  <button
-                    type="button"
-                    onClick={() => selectPresetToken('demo-candidate-5')}
-                    className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded bg-amber-950/80 hover:bg-amber-900/80 text-amber-300 border border-amber-800/80 text-xs font-semibold transition-colors"
-                  >
-                    <span>Lancia Test Motore M-300</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
+                );
+              })}
             </div>
           </div>
         </section>

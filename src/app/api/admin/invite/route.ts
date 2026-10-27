@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createCandidateSession } from '@/lib/supabase/client';
+import { SCENARIO_CATALOG } from '@/lib/assessment/parametric';
 
 function isAuthorized(request: NextRequest): boolean {
   const adminSecret = process.env.ADMIN_SECRET;
@@ -43,32 +44,14 @@ export async function POST(request: NextRequest) {
     const proto = host.includes('localhost') ? 'http' : 'https';
     const invitationUrl = `${proto}://${host}/assessment/${encodeURIComponent(session.token)}`;
 
-    const scenarioDescriptions: Record<string, { role: string; name: string; focus: string }> = {
-      'valvola-v104': {
-        role: 'Supply Chain & Operations Specialist',
-        name: 'Valvola V-104',
-        focus: 'ragionamento su ROP e continuità operativa di linea',
-      },
-      'packaging-p200': {
-        role: 'Production Planner & MRP Specialist',
-        name: 'Packaging P-200',
-        focus: 'gestione dei colli di bottiglia e schedulazione commesse MRP',
-      },
-      'scheda-e501': {
-        role: 'Buyer Tecnico & Procurement Specialist',
-        name: 'Scheda E-501',
-        focus: 'valutazione del mercato spot e gestione dei rischi di approvvigionamento',
-      },
-      'process-m300': {
-        role: 'Junior Process & Lean Continuous Improvement Engineer',
-        name: 'Motore Brushless M-300',
-        focus: 'bilanciamento linea robotizzata, bottleneck e continuità OEE',
-      },
+    const sc = SCENARIO_CATALOG.find((s) => s.id === session.scenario_id) || SCENARIO_CATALOG[0];
+    const scMeta = {
+      role: sc.role,
+      name: `${sc.partNumber} (${sc.title})`,
+      focus: sc.summary,
     };
 
-    const scMeta = scenarioDescriptions[session.scenario_id] || scenarioDescriptions['valvola-v104'];
-
-    const prewrittenMessage = `Ciao ${session.candidate_name.split(' ')[0]},\n\nTi invito a completare la simulazione pratica tecnica di SkillBridge per il ruolo ${scMeta.role} (Scenario ${scMeta.name}).\n\n⏱ Durata: 25 minuti\n🔗 Link personale: ${invitationUrl}\n\nIl test misura il tuo ${scMeta.focus}. Buona prova!`;
+    const prewrittenMessage = `Ciao ${session.candidate_name.split(' ')[0]},\n\nTi invito a completare la simulazione pratica tecnica di SkillBridge per il ruolo ${scMeta.role} (Scenario: ${scMeta.name}).\n\n⏱ Durata: 25 minuti\n🔗 Link personale: ${invitationUrl}\n\nIl test misura il tuo ${scMeta.focus}. Buona prova!`;
 
     return NextResponse.json({
       success: true,

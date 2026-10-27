@@ -38,6 +38,9 @@ export default function AdminPage() {
 
   // Scenario Catalog Drawer State
   const [showCatalogModal, setShowCatalogModal] = useState<boolean>(false);
+  const [catalogFilter, setCatalogFilter] = useState<
+    'all' | 'supply_chain' | 'production_planning' | 'procurement' | 'lean_process'
+  >('all');
 
   // New Invite Modal State
   const [showInviteModal, setShowInviteModal] = useState<boolean>(false);
@@ -453,13 +456,10 @@ export default function AdminPage() {
                           </div>
                           <div className="flex items-center gap-1.5 mt-1">
                             <span className="inline-flex items-center text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-950 text-blue-400 border border-slate-800">
-                              {session.scenario_id === 'packaging-p200'
-                                ? 'P-200 Packaging'
-                                : session.scenario_id === 'scheda-e501'
-                                ? 'E-501 SMT Buyer'
-                                : session.scenario_id === 'process-m300'
-                                ? 'M-300 Process Lean'
-                                : 'V-104 Supply Chain'}
+                              {(() => {
+                                const sc = SCENARIO_CATALOG.find((s) => s.id === session.scenario_id);
+                                return sc ? `${sc.partNumber} • ${sc.role.split(' ')[0]}` : 'V-104 Supply Chain';
+                              })()}
                             </span>
                             <span className="text-[10px] text-slate-600">
                               {new Date(session.created_at).toLocaleDateString('it-IT')}
@@ -974,7 +974,7 @@ export default function AdminPage() {
       {showCatalogModal && (
         <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-slate-900 border border-slate-800 rounded-lg max-w-2xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-5">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-4">
               <div className="flex items-center gap-2">
                 <BookOpen className="w-5 h-5 text-blue-400" />
                 <h3 className="text-base font-bold text-white">
@@ -989,8 +989,69 @@ export default function AdminPage() {
               </button>
             </div>
 
+            {/* Category Filter Pills */}
+            <div className="flex flex-wrap gap-2 mb-4 pb-3 border-b border-slate-800 text-xs">
+              <button
+                type="button"
+                onClick={() => setCatalogFilter('all')}
+                className={`px-2.5 py-1 rounded font-mono transition-colors ${
+                  catalogFilter === 'all'
+                    ? 'bg-blue-600 text-white font-bold'
+                    : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+                }`}
+              >
+                Tutti (20)
+              </button>
+              <button
+                type="button"
+                onClick={() => setCatalogFilter('supply_chain')}
+                className={`px-2.5 py-1 rounded font-mono transition-colors ${
+                  catalogFilter === 'supply_chain'
+                    ? 'bg-blue-600 text-white font-bold'
+                    : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+                }`}
+              >
+                Supply Chain (5)
+              </button>
+              <button
+                type="button"
+                onClick={() => setCatalogFilter('production_planning')}
+                className={`px-2.5 py-1 rounded font-mono transition-colors ${
+                  catalogFilter === 'production_planning'
+                    ? 'bg-blue-600 text-white font-bold'
+                    : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+                }`}
+              >
+                Pianificazione MRP (5)
+              </button>
+              <button
+                type="button"
+                onClick={() => setCatalogFilter('procurement')}
+                className={`px-2.5 py-1 rounded font-mono transition-colors ${
+                  catalogFilter === 'procurement'
+                    ? 'bg-blue-600 text-white font-bold'
+                    : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+                }`}
+              >
+                Procurement & Buyer (5)
+              </button>
+              <button
+                type="button"
+                onClick={() => setCatalogFilter('lean_process')}
+                className={`px-2.5 py-1 rounded font-mono transition-colors ${
+                  catalogFilter === 'lean_process'
+                    ? 'bg-blue-600 text-white font-bold'
+                    : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+                }`}
+              >
+                Process & Lean (5)
+              </button>
+            </div>
+
             <div className="space-y-4">
-              {SCENARIO_CATALOG.map((sc) => (
+              {SCENARIO_CATALOG.filter(
+                (sc) => catalogFilter === 'all' || sc.category === catalogFilter
+              ).map((sc) => (
                 <div key={sc.id} className="bg-slate-950 border border-slate-800 rounded-lg p-4">
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-mono text-xs text-blue-400 font-bold uppercase">

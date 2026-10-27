@@ -16,6 +16,7 @@ import {
   MessageSquare,
 } from 'lucide-react';
 import { AssessmentSession, AssessmentEvaluation, RecommendationBadge } from '@/lib/supabase/client';
+import { SCENARIO_CATALOG } from '@/lib/assessment/parametric';
 
 interface ScorecardViewProps {
   session: AssessmentSession;
@@ -54,22 +55,11 @@ export function ScorecardView({ session, evaluation }: ScorecardViewProps) {
     : new Date().toLocaleDateString('it-IT');
 
   const scenarioId = session.scenario_id || 'valvola-v104';
-  const scenarioCode =
-    scenarioId === 'packaging-p200'
-      ? 'P200'
-      : scenarioId === 'scheda-e501'
-      ? 'E501'
-      : scenarioId === 'process-m300'
-      ? 'M300'
-      : 'V104';
-  const scenarioTitle =
-    scenarioId === 'packaging-p200'
-      ? 'Collo di Bottiglia & Cambio Formato Packaging P-200'
-      : scenarioId === 'scheda-e501'
-      ? 'Crisi Approvvigionamento Microcontrollore Automotive E-501'
-      : scenarioId === 'process-m300'
-      ? 'Bilanciamento Linea & Collo di Bottiglia Motore Brushless M-300'
-      : 'Rottura Supply Chain Valvola V-104';
+  const scCatalogItem = SCENARIO_CATALOG.find((s) => s.id === scenarioId);
+  const scenarioCode = scCatalogItem
+    ? scCatalogItem.id.split('-')[1]?.toUpperCase() || 'V104'
+    : 'V104';
+  const scenarioTitle = scCatalogItem?.title || 'Rottura Supply Chain Valvola V-104';
 
   const reportId = `SKB-${scenarioCode}-${session.id.slice(0, 8).toUpperCase()}`;
 

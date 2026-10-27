@@ -7,14 +7,44 @@ import {
 } from '../parametric';
 import { evaluateDeterministic, type CandidateSupplyChainAnswers } from '../deterministic';
 
-describe('Multi-Scenario Catalog & Parametric Generator', () => {
-  it('should list all 4 standard industrial scenarios in SCENARIO_CATALOG', () => {
-    expect(SCENARIO_CATALOG).toHaveLength(4);
+describe('Multi-Scenario Catalog & Parametric Generator (20 Scenarios)', () => {
+  it('should list all 20 industrial scenarios in SCENARIO_CATALOG with 5 scenarios per role category', () => {
+    expect(SCENARIO_CATALOG).toHaveLength(20);
+
+    const categories = ['supply_chain', 'production_planning', 'procurement', 'lean_process'] as const;
+    for (const cat of categories) {
+      const perCat = SCENARIO_CATALOG.filter((s) => s.category === cat);
+      expect(perCat).toHaveLength(5);
+    }
+
     const ids = SCENARIO_CATALOG.map((s) => s.id);
+    // Supply Chain
     expect(ids).toContain('valvola-v104');
+    expect(ids).toContain('pompa-p402');
+    expect(ids).toContain('riduttore-r120');
+    expect(ids).toContain('cilindro-c750');
+    expect(ids).toContain('attuatore-a910');
+
+    // Production Planning
     expect(ids).toContain('packaging-p200');
+    expect(ids).toContain('pressa-m800');
+    expect(ids).toContain('verniciatura-v310');
+    expect(ids).toContain('imbottigliamento-b500');
+    expect(ids).toContain('estrusione-e620');
+
+    // Procurement
     expect(ids).toContain('scheda-e501');
+    expect(ids).toContain('fusione-f350');
+    expect(ids).toContain('cablaggio-w110');
+    expect(ids).toContain('sensore-s820');
+    expect(ids).toContain('titanio-t950');
+
+    // Lean & Process
     expect(ids).toContain('process-m300');
+    expect(ids).toContain('smed-k150');
+    expect(ids).toContain('kanban-k800');
+    expect(ids).toContain('qualita-q420');
+    expect(ids).toContain('takt-t600');
 
     for (const item of SCENARIO_CATALOG) {
       expect(item.title).toBeTruthy();
@@ -24,6 +54,72 @@ describe('Multi-Scenario Catalog & Parametric Generator', () => {
       expect(item.productionLine).toBeTruthy();
       expect(item.downtimeCostPerHour).toBeGreaterThan(0);
     }
+  });
+
+  it('should generate reproducible scenarios for pompa-p402 and evaluate 70/70', () => {
+    const s1 = generateScenarioFromToken('seed-p402-test', 'pompa-p402');
+    const s2 = generateScenarioFromToken('seed-p402-test', 'pompa-p402');
+    expect(s1).toEqual(s2);
+    expect(s1.partNumber).toBe('GIR-P402');
+    expect(s1.expeditedSupplier.batchSize).toBe(100);
+    expect(s1.downtimeCostPerHour).toBe(1400);
+
+    const answers: CandidateSupplyChainAnswers = {
+      stockoutDay: s1.expectedStockoutDay,
+      downtimeDays: s1.expectedDowntimeDays,
+      downtimeCost: s1.expectedDowntimeCost,
+      reorderQty: s1.expectedReorderQty,
+      extraCost: s1.expectedExtraCost,
+    };
+    expect(evaluateDeterministic(answers, s1).score).toBe(70);
+  });
+
+  it('should generate reproducible scenarios for pressa-m800 and evaluate 70/70', () => {
+    const s1 = generateScenarioFromToken('seed-m800-test', 'pressa-m800');
+    expect(s1.partNumber).toBe('COIL-M800');
+    expect(s1.expeditedSupplier.batchSize).toBe(300);
+    expect(s1.downtimeCostPerHour).toBe(1900);
+
+    const answers: CandidateSupplyChainAnswers = {
+      stockoutDay: s1.expectedStockoutDay,
+      downtimeDays: s1.expectedDowntimeDays,
+      downtimeCost: s1.expectedDowntimeCost,
+      reorderQty: s1.expectedReorderQty,
+      extraCost: s1.expectedExtraCost,
+    };
+    expect(evaluateDeterministic(answers, s1).score).toBe(70);
+  });
+
+  it('should generate reproducible scenarios for titanio-t950 and evaluate 70/70', () => {
+    const s1 = generateScenarioFromToken('seed-t950-test', 'titanio-t950');
+    expect(s1.partNumber).toBe('BAR-T950');
+    expect(s1.expeditedSupplier.batchSize).toBe(40);
+    expect(s1.downtimeCostPerHour).toBe(2600);
+
+    const answers: CandidateSupplyChainAnswers = {
+      stockoutDay: s1.expectedStockoutDay,
+      downtimeDays: s1.expectedDowntimeDays,
+      downtimeCost: s1.expectedDowntimeCost,
+      reorderQty: s1.expectedReorderQty,
+      extraCost: s1.expectedExtraCost,
+    };
+    expect(evaluateDeterministic(answers, s1).score).toBe(70);
+  });
+
+  it('should generate reproducible scenarios for takt-t600 and evaluate 70/70', () => {
+    const s1 = generateScenarioFromToken('seed-t600-test', 'takt-t600');
+    expect(s1.partNumber).toBe('DISS-T600');
+    expect(s1.expeditedSupplier.batchSize).toBe(80);
+    expect(s1.downtimeCostPerHour).toBe(2250);
+
+    const answers: CandidateSupplyChainAnswers = {
+      stockoutDay: s1.expectedStockoutDay,
+      downtimeDays: s1.expectedDowntimeDays,
+      downtimeCost: s1.expectedDowntimeCost,
+      reorderQty: s1.expectedReorderQty,
+      extraCost: s1.expectedExtraCost,
+    };
+    expect(evaluateDeterministic(answers, s1).score).toBe(70);
   });
 
   it('should generate reproducible scenarios for packaging-p200 with appropriate domain parameters', () => {
