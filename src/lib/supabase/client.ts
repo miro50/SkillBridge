@@ -12,6 +12,15 @@ export interface SessionTelemetry {
   blur_count: number;
   paste_count: number;
   time_spent_seconds: number;
+  copy_count?: number;
+  cut_count?: number;
+  screenshot_count?: number;
+  devtools_count?: number;
+  webcam_verified?: boolean;
+  proctoring_active?: boolean;
+  proctoring_snapshots_count?: number;
+  fullscreen_exits?: number;
+  cheat_events?: Array<{ type: string; timestamp: string; message: string }>;
   [key: string]: unknown;
 }
 

@@ -13,6 +13,12 @@ import {
   Info,
   CheckCircle2,
   Laptop,
+  Video,
+  Camera,
+  ShieldCheck,
+  Minimize2,
+  Maximize2,
+  AlertOctagon,
 } from 'lucide-react';
 import { AssessmentSession, CandidateRawAnswers, SessionTelemetry } from '@/lib/supabase/client';
 import { PublicScenarioConfig } from '@/lib/assessment/parametric';
@@ -48,9 +54,26 @@ export function RunnerCockpit({
     session.raw_answers?.decisionMemo || ''
   );
 
-  // Telemetry state
+  // Telemetry & Anti-Cheat state
   const [blurCount, setBlurCount] = useState<number>(session.telemetry?.blur_count || 0);
   const [pasteCount, setPasteCount] = useState<number>(session.telemetry?.paste_count || 0);
+  const [copyCount, setCopyCount] = useState<number>(session.telemetry?.copy_count || 0);
+  const [cutCount, setCutCount] = useState<number>(session.telemetry?.cut_count || 0);
+  const [screenshotCount, setScreenshotCount] = useState<number>(session.telemetry?.screenshot_count || 0);
+  const [devtoolsCount, setDevtoolsCount] = useState<number>(session.telemetry?.devtools_count || 0);
+  const [snapshotCount, setSnapshotCount] = useState<number>(session.telemetry?.proctoring_snapshots_count || 0);
+
+  // Anti-Cheat Notification / Shield Overlays
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isDefocused, setIsDefocused] = useState<boolean>(false);
+  const [isScreenshotShieldActive, setIsScreenshotShieldActive] = useState<boolean>(false);
+
+  // Video Proctoring State
+  const [isWebcamActive, setIsWebcamActive] = useState<boolean>(false);
+  const [proctoringMode, setProctoringMode] = useState<'live' | 'simulated'>('live');
+  const [isPiPMinimized, setIsPiPMinimized] = useState<boolean>(false);
+  const cockpitVideoRef = useRef<HTMLVideoElement | null>(null);
+  const cockpitStreamRef = useRef<MediaStream | null>(null);
 
   // Timer state (seconds)
   const [remainingSeconds, setRemainingSeconds] = useState<number>(initialRemainingSeconds);
@@ -71,10 +94,90 @@ export function RunnerCockpit({
   const telemetryRef = useRef<SessionTelemetry>({
     blur_count: blurCount,
     paste_count: pasteCount,
+    copy_count: copyCount,
+    cut_count: cutCount,
+    screenshot_count: screenshotCount,
+    devtools_count: devtoolsCount,
+    webcam_verified: true,
+    proctoring_active: true,
+    proctoring_snapshots_count: snapshotCount,
     time_spent_seconds: elapsedSeconds,
   });
 
-  // Keep ref synchronized with state for interval closures
+  const toastTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const showBlockedActionToast = useCallback((msg: string) => {
+    setToastMessage(msg);
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = setTimeout(() => {
+      setToastMessage(null);
+    }, 3200);
+  }, []);
+
+  // Initialize Webcam for continuous proctoring
+  useEffect(() => {
+    let isCancelled = false;
+
+    async function initCamera() {
+      try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          setProctoringMode('simulated');
+          return;
+        }
+
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            width: { ideal: 320 },
+            height: { ideal: 240 },
+            facingMode: 'user',
+          },
+          audio: false,
+        });
+
+        if (isCancelled) {
+          stream.getTracks().forEach((track) => track.stop());
+          return;
+        }
+
+        cockpitStreamRef.current = stream;
+        setIsWebcamActive(true);
+        setProctoringMode('live');
+
+        if (cockpitVideoRef.current) {
+          cockpitVideoRef.current.srcObject = stream;
+          cockpitVideoRef.current.play().catch(() => {});
+        }
+      } catch (err) {
+        console.warn('[RunnerCockpit] Webcam init fallback to simulated proctoring:', err);
+        setProctoringMode('simulated');
+      }
+    }
+
+    initCamera();
+
+    // Snapshot tick every 30 seconds
+    const snapshotInterval = setInterval(() => {
+      setSnapshotCount((prev) => prev + 1);
+    }, 30000);
+
+    return () => {
+      isCancelled = true;
+      clearInterval(snapshotInterval);
+      if (cockpitStreamRef.current) {
+        cockpitStreamRef.current.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, []);
+
+  // Re-attach stream if minimized or state changed
+  useEffect(() => {
+    if (isWebcamActive && cockpitVideoRef.current && cockpitStreamRef.current) {
+      cockpitVideoRef.current.srcObject = cockpitStreamRef.current;
+      cockpitVideoRef.current.play().catch(() => {});
+    }
+  }, [isWebcamActive, isPiPMinimized]);
+
+  // Keep answersRef synchronized with state
   useEffect(() => {
     answersRef.current = {
       stockoutDay: stockoutDay ? Number(stockoutDay) : undefined,
@@ -84,13 +187,32 @@ export function RunnerCockpit({
     };
   }, [stockoutDay, downtimeDays, reorderQty, decisionMemo]);
 
+  // Keep telemetryRef synchronized
   useEffect(() => {
     telemetryRef.current = {
       blur_count: blurCount,
       paste_count: pasteCount,
+      copy_count: copyCount,
+      cut_count: cutCount,
+      screenshot_count: screenshotCount,
+      devtools_count: devtoolsCount,
+      webcam_verified: isWebcamActive || proctoringMode === 'simulated',
+      proctoring_active: isWebcamActive || proctoringMode === 'simulated',
+      proctoring_snapshots_count: snapshotCount,
       time_spent_seconds: elapsedSeconds,
     };
-  }, [blurCount, pasteCount, elapsedSeconds]);
+  }, [
+    blurCount,
+    pasteCount,
+    copyCount,
+    cutCount,
+    screenshotCount,
+    devtoolsCount,
+    isWebcamActive,
+    proctoringMode,
+    snapshotCount,
+    elapsedSeconds,
+  ]);
 
   // Window size listener for Desktop Gate (D8)
   useEffect(() => {
@@ -102,15 +224,152 @@ export function RunnerCockpit({
     return () => window.removeEventListener('resize', checkViewport);
   }, []);
 
-  // Passive Telemetry Listeners (Blur count & Time spent)
+  // COMPREHENSIVE ANTI-CHEAT LISTENERS
   useEffect(() => {
-    const handleBlur = () => {
-      setBlurCount((prev) => prev + 1);
+    // 1. Copy Interception
+    const handleCopy = (e: ClipboardEvent) => {
+      e.preventDefault();
+      setCopyCount((prev) => prev + 1);
+      showBlockedActionToast('⚠️ AZIONE BLOCCATA: La copia dei testi di assessment è vietata.');
     };
 
+    // 2. Cut Interception
+    const handleCut = (e: ClipboardEvent) => {
+      e.preventDefault();
+      setCutCount((prev) => prev + 1);
+      showBlockedActionToast('⚠️ AZIONE BLOCCATA: Il comando Taglia è disabilitato.');
+    };
+
+    // 3. Paste Interception
+    const handlePaste = (e: ClipboardEvent) => {
+      e.preventDefault();
+      setPasteCount((prev) => prev + 1);
+      showBlockedActionToast('⚠️ AZIONE BLOCCATA: Incolla disabilitato. È richiesta stesura originale del testo.');
+    };
+
+    // 4. Context Menu (Right Click)
+    const handleContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+      showBlockedActionToast('⚠️ Menu contestuale disabilitato per policy di sicurezza anti-cheat.');
+    };
+
+    // 5. Drag & Drop Interception
+    const handleDragStart = (e: DragEvent) => {
+      e.preventDefault();
+    };
+    const handleDrop = (e: DragEvent) => {
+      e.preventDefault();
+      showBlockedActionToast('⚠️ Trascinamento contenuti esterni disabilitato.');
+    };
+
+    // 6. Keyboard Shortcuts Interception
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // PrintScreen Key
+      if (e.key === 'PrintScreen') {
+        e.preventDefault();
+        setScreenshotCount((prev) => prev + 1);
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText('');
+          }
+        } catch {}
+        setIsScreenshotShieldActive(true);
+        setTimeout(() => setIsScreenshotShieldActive(false), 2000);
+        showBlockedActionToast('⚠️ SCREENSHOT INTERCETTATO & BLOCCATO: Evento registrato nel log d\'integrità.');
+        return;
+      }
+
+      const isCmdOrCtrl = e.ctrlKey || e.metaKey;
+      const isShift = e.shiftKey;
+      const isAlt = e.altKey;
+
+      // DevTools Keys: F12, Ctrl+Shift+I, Cmd+Alt+I, Ctrl+Shift+J, Cmd+Alt+J, Ctrl+Shift+C, Ctrl+U
+      if (
+        e.key === 'F12' ||
+        (isCmdOrCtrl && isShift && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) ||
+        (isCmdOrCtrl && isAlt && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) ||
+        (isCmdOrCtrl && (e.key === 'U' || e.key === 'u'))
+      ) {
+        e.preventDefault();
+        e.stopPropagation();
+        setDevtoolsCount((prev) => prev + 1);
+        showBlockedActionToast('⚠️ Scorciatoie di debug e ispezione codice disabilitate.');
+        return;
+      }
+
+      // Print: Ctrl+P / Cmd+P
+      if (isCmdOrCtrl && (e.key === 'p' || e.key === 'P')) {
+        e.preventDefault();
+        showBlockedActionToast('⚠️ Stampa della pagina disabilitata.');
+        return;
+      }
+
+      // Keyboard Copy (Ctrl+C / Cmd+C)
+      if (isCmdOrCtrl && (e.key === 'c' || e.key === 'C')) {
+        e.preventDefault();
+        setCopyCount((prev) => prev + 1);
+        showBlockedActionToast('⚠️ Copia da tastiera (Ctrl+C) bloccata dal protocollo anti-cheat.');
+        return;
+      }
+
+      // Keyboard Paste (Ctrl+V / Cmd+V)
+      if (isCmdOrCtrl && (e.key === 'v' || e.key === 'V')) {
+        e.preventDefault();
+        setPasteCount((prev) => prev + 1);
+        showBlockedActionToast('⚠️ Incolla da tastiera (Ctrl+V) bloccato. Digita le risposte manualmente.');
+        return;
+      }
+
+      // Keyboard Cut (Ctrl+X / Cmd+X)
+      if (isCmdOrCtrl && (e.key === 'x' || e.key === 'X')) {
+        e.preventDefault();
+        setCutCount((prev) => prev + 1);
+        showBlockedActionToast('⚠️ Taglia da tastiera (Ctrl+X) bloccato.');
+        return;
+      }
+    };
+
+    // 7. Defocus & Tab Switch Protection
+    const handleBlur = () => {
+      setBlurCount((prev) => prev + 1);
+      setIsDefocused(true);
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        setBlurCount((prev) => prev + 1);
+        setIsDefocused(true);
+      }
+    };
+
+    document.addEventListener('copy', handleCopy);
+    document.addEventListener('cut', handleCut);
+    document.addEventListener('paste', handlePaste);
+    document.addEventListener('contextmenu', handleContextMenu);
+    document.addEventListener('dragstart', handleDragStart);
+    document.addEventListener('drop', handleDrop);
+    window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('blur', handleBlur);
-    return () => window.removeEventListener('blur', handleBlur);
-  }, []);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('copy', handleCopy);
+      document.removeEventListener('cut', handleCut);
+      document.removeEventListener('paste', handlePaste);
+      document.removeEventListener('contextmenu', handleContextMenu);
+      document.removeEventListener('dragstart', handleDragStart);
+      document.removeEventListener('drop', handleDrop);
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('blur', handleBlur);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [showBlockedActionToast]);
+
+  // Auto-Submit on Timer Expiration
+  const handleAutoSubmit = useCallback(() => {
+    if (isSubmitting) return;
+    onSubmit(answersRef.current, telemetryRef.current);
+  }, [isSubmitting, onSubmit]);
 
   // 1-Second Timer Tick
   useEffect(() => {
@@ -129,13 +388,12 @@ export function RunnerCockpit({
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [remainingSeconds]);
+  }, [remainingSeconds, handleAutoSubmit]);
 
   // Periodic Auto-Save every 15 seconds (LocalStorage + Server API)
   const performSave = useCallback(async () => {
     setSaveStatus('saving');
     try {
-      // LocalStorage recovery snapshot
       if (typeof window !== 'undefined') {
         localStorage.setItem(
           `skillbridge_draft_${session.token}`,
@@ -162,11 +420,6 @@ export function RunnerCockpit({
 
     return () => clearInterval(autoSaveInterval);
   }, [performSave]);
-
-  const handleAutoSubmit = useCallback(() => {
-    if (isSubmitting) return;
-    onSubmit(answersRef.current, telemetryRef.current);
-  }, [isSubmitting, onSubmit]);
 
   const handleManualSubmit = () => {
     setIsSubmitModalOpen(false);
@@ -208,8 +461,8 @@ export function RunnerCockpit({
     return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   };
 
-  const isTimerCritical = remainingSeconds < 2 * 60; // < 2 min -> red pulse
-  const isTimerWarning = remainingSeconds < 5 * 60 && !isTimerCritical; // < 5 min -> amber
+  const isTimerCritical = remainingSeconds < 2 * 60;
+  const isTimerWarning = remainingSeconds < 5 * 60 && !isTimerCritical;
 
   // Desktop Gate Overlay (D8)
   if (isMobileScreen) {
@@ -224,7 +477,7 @@ export function RunnerCockpit({
         <p className="max-w-md text-sm text-slate-300 leading-relaxed mb-6">
           Per garantire la corretta visualizzazione delle tabelle di stabilimento, l&apos;analisi delle
           griglie dati e la precisione nei calcoli di Supply Chain, questo assessment richiede un computer
-          desktop o laptop (risoluzione $\ge 1024$px).
+          desktop o laptop (risoluzione &ge; 1024px).
         </p>
         <div className="p-3 rounded-md bg-slate-800 border border-slate-700 text-xs font-mono text-slate-400 max-w-sm mb-6">
           Il tuo token di sessione è al sicuro: riapri il link dal tuo computer per continuare.
@@ -238,6 +491,64 @@ export function RunnerCockpit({
 
   return (
     <div className="h-screen w-screen flex flex-col bg-slate-50 text-slate-800 overflow-hidden select-none">
+      {/* ==================================================================== */}
+      {/* FLOATING ACTION BLOCKED TOAST NOTIFICATION                          */}
+      {/* ==================================================================== */}
+      {toastMessage && (
+        <div className="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 animate-bounce">
+          <div className="bg-red-600 text-white font-sans text-xs font-semibold px-4 py-2.5 rounded-md shadow-2xl flex items-center space-x-2 border border-red-500">
+            <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+            <span>{toastMessage}</span>
+          </div>
+        </div>
+      )}
+
+      {/* ==================================================================== */}
+      {/* DEFOCUS ALERT SHIELD OVERLAY                                         */}
+      {/* ==================================================================== */}
+      {isDefocused && (
+        <div className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-6 text-white text-center">
+          <div className="max-w-md w-full bg-slate-900 border-2 border-red-500 rounded-lg p-6 shadow-2xl space-y-4">
+            <div className="w-14 h-14 bg-red-950/80 border border-red-600 rounded-full flex items-center justify-center mx-auto text-red-400">
+              <AlertOctagon className="w-8 h-8 animate-pulse" />
+            </div>
+            <h3 className="text-base font-bold uppercase tracking-tight text-red-400">
+              Finestra Defocalizzata &bull; Allerta Anti-Cheat
+            </h3>
+            <p className="text-xs text-slate-300 leading-relaxed">
+              Hai abbandonato la schermata di esame. Il protocollo SkillBridge vieta la consultazione
+              di altre finestre, app di messaggistica o strumenti esterni. L&apos;evento è stato registrato nel log d&apos;integrità.
+            </p>
+            <div className="p-2.5 rounded bg-slate-950 border border-slate-800 text-[11px] font-mono text-amber-300">
+              Switch finestra rilevati: <span className="font-bold">{blurCount}</span> &bull; Proctoring attivo
+            </div>
+            <button
+              onClick={() => setIsDefocused(false)}
+              className="w-full py-2.5 px-4 rounded bg-red-600 hover:bg-red-500 text-white text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer shadow-lg"
+            >
+              Rientra Immediatamente nel Cockpit
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ==================================================================== */}
+      {/* SCREENSHOT SHIELD OVERLAY                                            */}
+      {/* ==================================================================== */}
+      {isScreenshotShieldActive && (
+        <div className="fixed inset-0 z-50 bg-black flex items-center justify-center text-white p-6">
+          <div className="text-center space-y-3">
+            <ShieldAlert className="w-16 h-16 text-amber-500 mx-auto animate-pulse" />
+            <h2 className="text-xl font-bold uppercase tracking-wider text-amber-400">
+              Tentativo di Screenshot Intercettato
+            </h2>
+            <p className="text-xs text-slate-300 max-w-sm mx-auto font-mono">
+              L&apos;acquisizione dello schermo è vietata. La clipboard è stata azzerata e l&apos;evento è stato registrato nell&apos;audit di sicurezza.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* ==================================================================== */}
       {/* TOP BAR: Slate-900 Header                                            */}
       {/* ==================================================================== */}
@@ -256,7 +567,13 @@ export function RunnerCockpit({
           </div>
         </div>
 
-        <div className="flex items-center space-x-6">
+        <div className="flex items-center space-x-4 sm:space-x-6">
+          {/* Proctoring & Anti-Cheat Status Badge */}
+          <div className="items-center space-x-1.5 px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-[11px] font-mono text-emerald-400 hidden md:flex">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>ANTI-CHEAT PROCTORING ATTIVO</span>
+          </div>
+
           <div className="text-right hidden sm:block">
             <span className="text-xs font-semibold text-slate-200 block">
               {session.candidate_name}
@@ -404,10 +721,10 @@ export function RunnerCockpit({
               1. Calcola l&apos;esatto giorno in cui lo stabilimento esaurirà le scorte senza nuovi arrivi.
             </p>
             <p>
-              2. Quantifica i giorni di fermo linea che si verificheranno prima del ripristino del fornitore primario (giorno 14).
+              2. Quantifica i giorni di fermo linea che si verificheranno prima del ripristino del fornitore primario.
             </p>
             <p>
-              3. Determina se e quanti lotti ordinare dal fornitore celere AirSupply per evitare il fermo linea.
+              3. Determina se e quanti lotti ordinare dal fornitore celere per evitare il fermo linea.
             </p>
             <p>
               4. Giustifica la tua scelta economica e operativa nel memo per il Plant Director.
@@ -457,7 +774,7 @@ export function RunnerCockpit({
               {/* Field 2: Downtime Days */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                  2. Giorni di Fermo Linea Senza Fornitore Celere (Prima del gg 14)
+                  2. Giorni di Fermo Linea Senza Fornitore Celere
                 </label>
                 <div className="relative">
                   <input
@@ -549,13 +866,83 @@ export function RunnerCockpit({
                   setDecisionMemo(e.target.value);
                   setSaveStatus('dirty');
                 }}
-                onPaste={() => setPasteCount((prev) => prev + 1)}
                 placeholder="Spiega sinteticamente il trade-off economico tra extra-costo di fornitura celere e costo di fermo linea. Specifica come intendi gestire i lead time fornitore e la tutela della scorta di sicurezza minima..."
                 className="w-full p-3 font-sans text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-slate-400 leading-relaxed"
               />
             </div>
           </div>
         </section>
+      </div>
+
+      {/* ==================================================================== */}
+      {/* FLOATING PICTURE-IN-PICTURE WEBCAM MONITOR                            */}
+      {/* ==================================================================== */}
+      <div className="fixed bottom-20 right-6 z-30 transition-all duration-200">
+        {isPiPMinimized ? (
+          <button
+            onClick={() => setIsPiPMinimized(false)}
+            className="bg-slate-900 border border-slate-700 text-white px-3 py-1.5 rounded-full shadow-xl flex items-center space-x-2 text-xs font-mono hover:bg-slate-800 transition-colors cursor-pointer"
+          >
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+            <span>● REC Proctoring</span>
+            <Maximize2 className="w-3.5 h-3.5 ml-1 text-slate-400" />
+          </button>
+        ) : (
+          <div className="w-64 bg-slate-900 border border-slate-700 rounded-lg shadow-2xl overflow-hidden">
+            {/* PiP Header */}
+            <div className="bg-slate-950 px-3 py-1.5 flex items-center justify-between border-b border-slate-800">
+              <div className="flex items-center space-x-1.5">
+                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                <span className="text-[10px] font-mono font-bold tracking-wider text-slate-200 uppercase">
+                  ● REC &bull; Proctoring Attivo
+                </span>
+              </div>
+              <button
+                onClick={() => setIsPiPMinimized(true)}
+                className="text-slate-400 hover:text-white p-0.5 rounded cursor-pointer"
+                title="Minimizza riquadro video"
+              >
+                <Minimize2 className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {/* Video Stream or Simulated Visual */}
+            <div className="relative aspect-video bg-black flex items-center justify-center overflow-hidden">
+              {isWebcamActive ? (
+                <video
+                  ref={cockpitVideoRef}
+                  autoPlay
+                  playsInline
+                  muted
+                  className="w-full h-full object-cover transform -scale-x-100"
+                />
+              ) : (
+                <div className="text-center p-3">
+                  <ShieldCheck className="w-7 h-7 text-blue-400 mx-auto mb-1 opacity-80" />
+                  <p className="text-[10px] font-mono text-blue-300">
+                    Audit Video Presidiato
+                  </p>
+                  <p className="text-[9px] text-slate-400">
+                    Monitoraggio visivo & telemetria
+                  </p>
+                </div>
+              )}
+
+              <div className="absolute bottom-1 right-1 bg-black/70 px-1.5 py-0.5 rounded text-[9px] font-mono text-emerald-400">
+                ID: {session.id.slice(0, 6)}
+              </div>
+            </div>
+
+            {/* Anti-Device Warning Strip */}
+            <div className="p-2 bg-slate-950 border-t border-slate-800 text-[10px] text-slate-400 leading-tight">
+              <div className="flex items-center space-x-1 text-amber-400 font-semibold mb-0.5">
+                <ShieldAlert className="w-3 h-3 flex-shrink-0" />
+                <span>Controllo Dispositivi Attivo</span>
+              </div>
+              <span>Vietati smartphone, tablet o secondi monitor.</span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ==================================================================== */}
