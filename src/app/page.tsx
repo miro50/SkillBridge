@@ -81,10 +81,10 @@ export default function HomePage() {
               Come Funziona
             </a>
             <a
-              href="#scenario"
+              href="#scenari"
               className="text-slate-400 hover:text-white transition-colors hidden md:inline-block px-2 py-1"
             >
-              Scenario V-104
+              Scenari Industriali
             </a>
             <a
               href="#garanzia"
@@ -120,10 +120,10 @@ export default function HomePage() {
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-xs text-slate-300">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="font-mono text-slate-400 uppercase tracking-wider text-[11px]">
-                  Scenario Attivo:
+                  Scenari Attivi:
                 </span>
                 <span className="font-semibold text-slate-200">
-                  Fermo Linea Valvola V-104 (Supply Chain & Operations)
+                  Supply Chain (V-104) • MRP Planning (P-200) • Buyer Tecnico (E-501)
                 </span>
               </div>
             </div>
@@ -275,29 +275,29 @@ export default function HomePage() {
                   {/* Demo Tokens Pills */}
                   <div>
                     <span className="text-[11px] font-mono text-slate-500 block mb-1.5">
-                      Sessioni demo pre-generate disponibili al volo:
+                      Sessioni demo pre-generate nei 3 domini operativi:
                     </span>
                     <div className="flex flex-wrap gap-2">
                       <button
                         type="button"
                         onClick={() => selectPresetToken('demo-candidate-1')}
-                        className="px-2.5 py-1 rounded bg-slate-950 hover:bg-slate-800 border border-slate-800 text-[11px] font-mono text-blue-400 hover:text-blue-300 transition-colors"
+                        className="px-2.5 py-1 rounded bg-slate-950 hover:bg-slate-800 border border-blue-900/60 text-[11px] font-mono text-blue-400 hover:text-blue-300 transition-colors"
                       >
-                        demo-candidate-1 (Marco B.)
+                        demo-candidate-1 (V-104 Supply Chain)
                       </button>
                       <button
                         type="button"
                         onClick={() => selectPresetToken('demo-candidate-2')}
-                        className="px-2.5 py-1 rounded bg-slate-950 hover:bg-slate-800 border border-slate-800 text-[11px] font-mono text-slate-400 hover:text-slate-200 transition-colors"
+                        className="px-2.5 py-1 rounded bg-slate-950 hover:bg-slate-800 border border-emerald-900/60 text-[11px] font-mono text-emerald-400 hover:text-emerald-300 transition-colors"
                       >
-                        demo-candidate-2 (Sara R.)
+                        demo-candidate-2 (P-200 Production Planner)
                       </button>
                       <button
                         type="button"
-                        onClick={() => selectPresetToken('demo-candidate-3')}
-                        className="px-2.5 py-1 rounded bg-slate-950 hover:bg-slate-800 border border-slate-800 text-[11px] font-mono text-slate-400 hover:text-slate-200 transition-colors"
+                        onClick={() => selectPresetToken('demo-candidate-4')}
+                        className="px-2.5 py-1 rounded bg-slate-950 hover:bg-slate-800 border border-sky-900/60 text-[11px] font-mono text-sky-400 hover:text-sky-300 transition-colors"
                       >
-                        demo-candidate-3 (Luca M.)
+                        demo-candidate-4 (E-501 Buyer Tecnico)
                       </button>
                     </div>
                   </div>
@@ -413,74 +413,152 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Deep Dive: Scenario Valvola V-104 */}
-        <section id="scenario" className="py-20 border-b border-slate-800 bg-slate-900/40">
+        {/* Deep Dive: Multi-Scenario Industrial Showcase */}
+        <section id="scenari" className="py-20 border-b border-slate-800 bg-slate-900/40">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mb-12">
-              <span className="text-xs font-mono uppercase tracking-widest text-sky-400 bg-sky-950/80 px-2.5 py-1 rounded border border-sky-900">
-                SCENARIO ATTIVO #01
+              <span className="text-xs font-mono uppercase tracking-widest text-blue-400 bg-blue-950/80 px-2.5 py-1 rounded border border-blue-900">
+                CATALOGO TEST MULTI-RUOLO • SPEC-002
               </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-white mt-3 uppercase">
-                Fermo Linea Improvviso: Valvola Idraulica V-104
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-white mt-3 uppercase tracking-tight">
+                3 Simulazioni Tecniche per le Figure Chiave di Fabbrica
               </h2>
               <p className="text-sm text-slate-400 mt-2 leading-relaxed">
-                Costruito con veri Direttori di Stabilimento italiani per testare il candidato
-                sulle 3 competenze vitali per un junior in Operations e Supply Chain.
+                Ogni modulo mette il candidato davanti a un caso reale con dati numerici generati
+                deterministicamente anti-copia, vincoli stringenti di MOQ/Lead Time e grading trasparente 0-100.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Metric 1 */}
-              <div className="bg-slate-900 border border-slate-800 rounded-lg p-6">
-                <div className="w-8 h-8 rounded bg-blue-950 border border-blue-800 flex items-center justify-center text-blue-400 mb-4 font-mono font-bold text-sm">
-                  01
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Scenario 1: Valvola V-104 */}
+              <div className="bg-slate-900 border border-slate-800 hover:border-blue-700/60 transition-all rounded-lg p-6 flex flex-col justify-between shadow-lg">
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-mono text-[11px] font-bold text-blue-400 bg-blue-950/80 px-2 py-0.5 rounded border border-blue-900">
+                      MODULO SKB-V104
+                    </span>
+                    <span className="text-[10px] font-mono uppercase text-slate-500">25 MIN CRONOMETRATI</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-1">
+                    Fermo Linea Valvola V-104
+                  </h3>
+                  <div className="text-xs text-blue-400 font-semibold mb-3">
+                    Supply Chain & Operations Specialist
+                  </div>
+                  <p className="text-xs text-slate-400 leading-relaxed mb-4">
+                    Rottura improvvisa della fornitura di O-Ring NBR-70 su Linea 2 Montaggio con ritardo di 12 giorni.
+                    Il candidato deve calcolare lo stockout day esatto, le ore di fermo impianto e il lotto di reintegro MOQ.
+                  </p>
+
+                  <div className="space-y-2 py-3 border-t border-slate-800 text-xs">
+                    <div className="flex items-center justify-between text-slate-300">
+                      <span className="text-slate-500">Dossier:</span>
+                      <span className="font-mono text-[11px]">BOM, ERP Stock, Ritardo Fornitore</span>
+                    </div>
+                    <div className="flex items-center justify-between text-slate-300">
+                      <span className="text-slate-500">Benchmark:</span>
+                      <span className="font-mono text-[11px] text-blue-400">70 pt Det. + 30 pt Sem.</span>
+                    </div>
+                  </div>
                 </div>
-                <h4 className="text-base font-bold text-white mb-2">
-                  Calcolo Fabbisogno Netto (ROP)
-                </h4>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  Il fornitore degli O-Ring segnala un ritardo di 12 giorni. Il candidato deve
-                  calcolare il deficit esatto considerando stock attuale, consumo giornaliero e
-                  vincolo di lotti minimi da 200 unità.
-                </p>
-                <div className="mt-4 pt-4 border-t border-slate-800 font-mono text-[11px] text-blue-400">
-                  Valutazione: 0-70 pt Deterministici
+
+                <div className="pt-4 border-t border-slate-800 mt-4">
+                  <button
+                    type="button"
+                    onClick={() => selectPresetToken('demo-candidate-1')}
+                    className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded bg-blue-950/80 hover:bg-blue-900/80 text-blue-300 border border-blue-800/80 text-xs font-semibold transition-colors"
+                  >
+                    <span>Lancia Test Valvola V-104</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               </div>
 
-              {/* Metric 2 */}
-              <div className="bg-slate-900 border border-slate-800 rounded-lg p-6">
-                <div className="w-8 h-8 rounded bg-indigo-950 border border-indigo-800 flex items-center justify-center text-indigo-400 mb-4 font-mono font-bold text-sm">
-                  02
+              {/* Scenario 2: Packaging P-200 */}
+              <div className="bg-slate-900 border border-slate-800 hover:border-emerald-700/60 transition-all rounded-lg p-6 flex flex-col justify-between shadow-lg">
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-mono text-[11px] font-bold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-900">
+                      MODULO SKB-P200
+                    </span>
+                    <span className="text-[10px] font-mono uppercase text-slate-500">25 MIN CRONOMETRATI</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-1">
+                    Riprogrammazione MRP Packaging P-200
+                  </h3>
+                  <div className="text-xs text-emerald-400 font-semibold mb-3">
+                    Production Planner & MRP Specialist
+                  </div>
+                  <p className="text-xs text-slate-400 leading-relaxed mb-4">
+                    Slittamento consegna bobine alluminio per camera bianca packaging. Il candidato deve riprogrammare
+                    il piano di produzione, calcolare il buffer ore perse e valutare il batching pallet da 500 unità.
+                  </p>
+
+                  <div className="space-y-2 py-3 border-t border-slate-800 text-xs">
+                    <div className="flex items-center justify-between text-slate-300">
+                      <span className="text-slate-500">Dossier:</span>
+                      <span className="font-mono text-[11px]">MPS, Lotto Pallet, Fabbisogno Netto</span>
+                    </div>
+                    <div className="flex items-center justify-between text-slate-300">
+                      <span className="text-slate-500">Benchmark:</span>
+                      <span className="font-mono text-[11px] text-emerald-400">70 pt Det. + 30 pt Sem.</span>
+                    </div>
+                  </div>
                 </div>
-                <h4 className="text-base font-bold text-white mb-2">
-                  Gestione del Fornitore Critico
-                </h4>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  Come negozia una fornitura d&apos;emergenza? Sa proporre consegne parziali anticipate,
-                  verificare la compatibilità tecnica o attivare un canale aereo d&apos;emergenza
-                  senza far esplodere i costi?
-                </p>
-                <div className="mt-4 pt-4 border-t border-slate-800 font-mono text-[11px] text-indigo-400">
-                  Valutazione: Gemini 2.5 Flash + Heuristic
+
+                <div className="pt-4 border-t border-slate-800 mt-4">
+                  <button
+                    type="button"
+                    onClick={() => selectPresetToken('demo-candidate-2')}
+                    className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded bg-emerald-950/80 hover:bg-emerald-900/80 text-emerald-300 border border-emerald-800/80 text-xs font-semibold transition-colors"
+                  >
+                    <span>Lancia Test Packaging P-200</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               </div>
 
-              {/* Metric 3 */}
-              <div className="bg-slate-900 border border-slate-800 rounded-lg p-6">
-                <div className="w-8 h-8 rounded bg-emerald-950 border border-emerald-800 flex items-center justify-center text-emerald-400 mb-4 font-mono font-bold text-sm">
-                  03
+              {/* Scenario 3: Scheda E-501 */}
+              <div className="bg-slate-900 border border-slate-800 hover:border-sky-700/60 transition-all rounded-lg p-6 flex flex-col justify-between shadow-lg">
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-mono text-[11px] font-bold text-sky-400 bg-sky-950/80 px-2 py-0.5 rounded border border-sky-900">
+                      MODULO SKB-E501
+                    </span>
+                    <span className="text-[10px] font-mono uppercase text-slate-500">25 MIN CRONOMETRATI</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-1">
+                    Allocazione Globale MCU E-501
+                  </h3>
+                  <div className="text-xs text-sky-400 font-semibold mb-3">
+                    Buyer Tecnico & Procurement Specialist
+                  </div>
+                  <p className="text-xs text-slate-400 leading-relaxed mb-4">
+                    Allocazione semiconduttori MCU su scheda automotive e offerta urgente spot broker. Il candidato
+                    calcola il trade-off economico tra extra-costo e fermo collaudo, gestendo conformità e tracciabilità.
+                  </p>
+
+                  <div className="space-y-2 py-3 border-t border-slate-800 text-xs">
+                    <div className="flex items-center justify-between text-slate-300">
+                      <span className="text-slate-500">Dossier:</span>
+                      <span className="font-mono text-[11px]">Broker Spot, Certificati RoHS, Tracciabilità</span>
+                    </div>
+                    <div className="flex items-center justify-between text-slate-300">
+                      <span className="text-slate-500">Benchmark:</span>
+                      <span className="font-mono text-[11px] text-sky-400">70 pt Det. + 30 pt Sem.</span>
+                    </div>
+                  </div>
                 </div>
-                <h4 className="text-base font-bold text-white mb-2">
-                  Comunicazione Interna con la Fabbrica
-                </h4>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  Redige una comunicazione chiara per il Caporeparto Produzione: sa anticipare
-                  le conseguenze sulla schedulazione e proporre un piano di contingenza
-                  senza creare allarmismi ingiustificati?
-                </p>
-                <div className="mt-4 pt-4 border-t border-slate-800 font-mono text-[11px] text-emerald-400">
-                  Valutazione: Pragmatismo & Leadership
+
+                <div className="pt-4 border-t border-slate-800 mt-4">
+                  <button
+                    type="button"
+                    onClick={() => selectPresetToken('demo-candidate-4')}
+                    className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded bg-sky-950/80 hover:bg-sky-900/80 text-sky-300 border border-sky-800/80 text-xs font-semibold transition-colors"
+                  >
+                    <span>Lancia Test Scheda E-501</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               </div>
             </div>
@@ -622,15 +700,23 @@ export default function HomePage() {
                     href="/assessment/demo-candidate-1"
                     className="hover:text-blue-400 transition-colors"
                   >
-                    Cockpit Valvola V-104 (Test)
+                    Test V-104: Supply Chain Specialist
                   </Link>
                 </li>
                 <li>
                   <Link
                     href="/assessment/demo-candidate-2"
-                    className="hover:text-blue-400 transition-colors"
+                    className="hover:text-emerald-400 transition-colors"
                   >
-                    Candidate Briefing Room
+                    Test P-200: Production Planner MRP
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/assessment/demo-candidate-4"
+                    className="hover:text-sky-400 transition-colors"
+                  >
+                    Test E-501: Buyer Tecnico & Sourcing
                   </Link>
                 </li>
                 <li>

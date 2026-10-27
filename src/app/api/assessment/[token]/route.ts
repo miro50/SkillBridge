@@ -23,7 +23,7 @@ export async function GET(
       );
     }
 
-    const scenarioConfig = generateScenarioFromToken(token);
+    const scenarioConfig = generateScenarioFromToken(token, session.scenario_id);
     const sanitizedScenario = sanitizeScenarioForCandidate(scenarioConfig);
 
     let remainingSeconds = 25 * 60; // 25:00 default

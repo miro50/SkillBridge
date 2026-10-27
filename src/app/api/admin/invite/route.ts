@@ -43,7 +43,27 @@ export async function POST(request: NextRequest) {
     const proto = host.includes('localhost') ? 'http' : 'https';
     const invitationUrl = `${proto}://${host}/assessment/${encodeURIComponent(session.token)}`;
 
-    const prewrittenMessage = `Ciao ${session.candidate_name.split(' ')[0]},\n\nTi invito a completare la simulazione pratica tecnica di SkillBridge per il ruolo Supply Chain & Operations (Scenario Valvola V-104).\n\n⏱ Durata: 25 minuti\n🔗 Link personale: ${invitationUrl}\n\nIl test misura il ragionamento su ROP e continuità operativa di linea. Buona prova!`;
+    const scenarioDescriptions: Record<string, { role: string; name: string; focus: string }> = {
+      'valvola-v104': {
+        role: 'Supply Chain & Operations Specialist',
+        name: 'Valvola V-104',
+        focus: 'ragionamento su ROP e continuità operativa di linea',
+      },
+      'packaging-p200': {
+        role: 'Production Planner & MRP Specialist',
+        name: 'Packaging P-200',
+        focus: 'gestione dei colli di bottiglia e schedulazione commesse MRP',
+      },
+      'scheda-e501': {
+        role: 'Buyer Tecnico & Procurement Specialist',
+        name: 'Scheda E-501',
+        focus: 'valutazione del mercato spot e gestione dei rischi di approvvigionamento',
+      },
+    };
+
+    const scMeta = scenarioDescriptions[session.scenario_id] || scenarioDescriptions['valvola-v104'];
+
+    const prewrittenMessage = `Ciao ${session.candidate_name.split(' ')[0]},\n\nTi invito a completare la simulazione pratica tecnica di SkillBridge per il ruolo ${scMeta.role} (Scenario ${scMeta.name}).\n\n⏱ Durata: 25 minuti\n🔗 Link personale: ${invitationUrl}\n\nIl test misura il tuo ${scMeta.focus}. Buona prova!`;
 
     return NextResponse.json({
       success: true,

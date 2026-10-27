@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const scenarioConfig = generateScenarioFromToken(token);
+    const scenarioConfig = generateScenarioFromToken(token, session.scenario_id);
 
     // 1. Grade 70% Deterministic
     const deterministicResult = evaluateDeterministic(rawAnswers || {}, scenarioConfig);

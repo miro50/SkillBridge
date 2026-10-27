@@ -40,7 +40,7 @@ export function BriefingRoom({
               SkillBridge Assessment Cockpit
             </h1>
             <p className="text-xs text-slate-500 font-mono">
-              Modulo: Supply Chain & Operations Specialist
+              Modulo: {scenario.role || 'Supply Chain & Operations Specialist'}
             </p>
           </div>
         </div>
@@ -58,7 +58,7 @@ export function BriefingRoom({
           <AlertTriangle className="w-5 h-5 text-amber-700 flex-shrink-0 mt-0.5" />
           <div className="text-sm text-amber-900">
             <span className="font-semibold block uppercase tracking-wider text-xs text-amber-800 mb-1">
-              Briefing Operativo Pre-Flight (Scenario V-104)
+              Briefing Operativo Pre-Flight &bull; {scenario.title}
             </span>
             Questa simulazione riproduce un&apos;anomalia reale di stabilimento. Il timer da 25:00
             partirà <strong>esclusivamente</strong> dopo aver cliccato sul pulsante di conferma in basso.

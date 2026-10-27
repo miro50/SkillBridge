@@ -53,7 +53,17 @@ export function ScorecardView({ session, evaluation }: ScorecardViewProps) {
       })
     : new Date().toLocaleDateString('it-IT');
 
-  const reportId = `SKB-V104-${session.id.slice(0, 8).toUpperCase()}`;
+  const scenarioId = session.scenario_id || 'valvola-v104';
+  const scenarioCode =
+    scenarioId === 'packaging-p200' ? 'P200' : scenarioId === 'scheda-e501' ? 'E501' : 'V104';
+  const scenarioTitle =
+    scenarioId === 'packaging-p200'
+      ? 'Collo di Bottiglia & Cambio Formato Packaging P-200'
+      : scenarioId === 'scheda-e501'
+      ? 'Crisi Approvvigionamento Microcontrollore Automotive E-501'
+      : 'Rottura Supply Chain Valvola V-104';
+
+  const reportId = `SKB-${scenarioCode}-${session.id.slice(0, 8).toUpperCase()}`;
 
   // Print trigger
   const handlePrint = () => {
@@ -194,7 +204,7 @@ export function ScorecardView({ session, evaluation }: ScorecardViewProps) {
               </h1>
             </div>
             <p className="text-xs text-slate-500 font-mono mt-0.5">
-              Scenario: Rottura Supply Chain Valvola V-104 &bull; ID: <span className="font-semibold text-slate-800">{reportId}</span>
+              Scenario: {scenarioTitle} &bull; ID: <span className="font-semibold text-slate-800">{reportId}</span>
             </p>
           </div>
 

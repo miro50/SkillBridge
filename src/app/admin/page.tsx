@@ -20,9 +20,11 @@ import {
   MessageSquare,
   Lock,
   ChevronRight,
-  Factory
+  Factory,
+  BookOpen
 } from 'lucide-react';
 import { SessionWithEvaluation, CompanyLead } from '@/lib/supabase/client';
+import { SCENARIO_CATALOG } from '@/lib/assessment/parametric';
 
 export default function AdminPage() {
   const [sessions, setSessions] = useState<SessionWithEvaluation[]>([]);
@@ -34,11 +36,15 @@ export default function AdminPage() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
+  // Scenario Catalog Drawer State
+  const [showCatalogModal, setShowCatalogModal] = useState<boolean>(false);
+
   // New Invite Modal State
   const [showInviteModal, setShowInviteModal] = useState<boolean>(false);
   const [candidateName, setCandidateName] = useState<string>('');
   const [candidateEmail, setCandidateEmail] = useState<string>('');
   const [customToken, setCustomToken] = useState<string>('');
+  const [selectedScenarioId, setSelectedScenarioId] = useState<string>('valvola-v104');
   const [isCreatingInvite, setIsCreatingInvite] = useState<boolean>(false);
   const [inviteResult, setInviteResult] = useState<{
     invitationUrl: string;
@@ -104,7 +110,7 @@ export default function AdminPage() {
           candidate_name: candidateName,
           candidate_email: candidateEmail,
           customToken: customToken || undefined,
-          scenario_id: 'valvola-v104',
+          scenario_id: selectedScenarioId,
         }),
       });
 
@@ -245,6 +251,15 @@ export default function AdminPage() {
           </div>
 
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowCatalogModal(true)}
+              className="px-3 py-2 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors text-xs flex items-center gap-1.5"
+              title="Vedi Catalogo Scenari"
+            >
+              <BookOpen className="w-3.5 h-3.5 text-blue-400" />
+              <span className="hidden sm:inline">Scenari ({SCENARIO_CATALOG.length})</span>
+            </button>
+
             <button
               onClick={fetchSessions}
               disabled={loading}
@@ -436,8 +451,17 @@ export default function AdminPage() {
                           <div className="text-[11px] text-slate-400 font-mono">
                             {session.candidate_email}
                           </div>
-                          <div className="text-[10px] text-slate-600 mt-0.5">
-                            Creato: {new Date(session.created_at).toLocaleDateString('it-IT')}
+                          <div className="flex items-center gap-1.5 mt-1">
+                            <span className="inline-flex items-center text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-950 text-blue-400 border border-slate-800">
+                              {session.scenario_id === 'packaging-p200'
+                                ? 'P-200 Packaging'
+                                : session.scenario_id === 'scheda-e501'
+                                ? 'E-501 SMT Buyer'
+                                : 'V-104 Supply Chain'}
+                            </span>
+                            <span className="text-[10px] text-slate-600">
+                              {new Date(session.created_at).toLocaleDateString('it-IT')}
+                            </span>
                           </div>
                         </td>
 
@@ -734,6 +758,26 @@ export default function AdminPage() {
 
                 <div>
                   <label className="block text-xs font-mono uppercase text-slate-400 mb-1">
+                    Scenario Operativo / Ruolo da Valutare *
+                  </label>
+                  <select
+                    value={selectedScenarioId}
+                    onChange={(e) => setSelectedScenarioId(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-md px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
+                  >
+                    {SCENARIO_CATALOG.map((sc) => (
+                      <option key={sc.id} value={sc.id}>
+                        [{sc.difficulty}] {sc.role} — {sc.title}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="p-2.5 bg-slate-950/80 rounded border border-slate-800 text-[11px] text-slate-400 font-mono mt-1.5 leading-relaxed">
+                    {SCENARIO_CATALOG.find((s) => s.id === selectedScenarioId)?.summary}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono uppercase text-slate-400 mb-1">
                     Token Personalizzato (opzionale)
                   </label>
                   <input
@@ -920,6 +964,72 @@ export default function AdminPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Catalogo Scenari Attivi */}
+      {showCatalogModal && (
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-lg max-w-2xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-5">
+              <div className="flex items-center gap-2">
+                <BookOpen className="w-5 h-5 text-blue-400" />
+                <h3 className="text-base font-bold text-white">
+                  Catalogo Scenari di Valutazione Attivi ({SCENARIO_CATALOG.length})
+                </h3>
+              </div>
+              <button
+                onClick={() => setShowCatalogModal(false)}
+                className="text-slate-400 hover:text-white text-xs font-mono"
+              >
+                ✕ Chiudi
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {SCENARIO_CATALOG.map((sc) => (
+                <div key={sc.id} className="bg-slate-950 border border-slate-800 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-mono text-xs text-blue-400 font-bold uppercase">
+                      ID: {sc.id}
+                    </span>
+                    <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-slate-900 text-slate-300 border border-slate-800">
+                      Livello: {sc.difficulty}
+                    </span>
+                  </div>
+                  <h4 className="text-sm font-bold text-white mb-1">{sc.title}</h4>
+                  <div className="text-xs text-emerald-400 font-semibold mb-2">
+                    Ruolo Target: {sc.role}
+                  </div>
+                  <p className="text-xs text-slate-400 leading-relaxed mb-3">{sc.summary}</p>
+                  <div className="grid grid-cols-3 gap-2 text-[11px] font-mono text-slate-400 pt-3 border-t border-slate-900">
+                    <div>
+                      <span className="text-slate-600 block text-[10px]">Componente:</span>
+                      <span className="text-slate-300">{sc.partNumber}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-600 block text-[10px]">Reparto:</span>
+                      <span className="text-slate-300">{sc.productionLine}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-600 block text-[10px]">Danno Fermo:</span>
+                      <span className="text-rose-400 font-bold">{sc.downtimeCostPerHour.toLocaleString('it-IT')} €/h</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-4 border-t border-slate-800 flex justify-end mt-4">
+              <button
+                type="button"
+                onClick={() => setShowCatalogModal(false)}
+                className="px-4 py-2 rounded-md bg-slate-800 hover:bg-slate-700 text-white text-xs font-medium"
+              >
+                Chiudi
+              </button>
+            </div>
           </div>
         </div>
       )}

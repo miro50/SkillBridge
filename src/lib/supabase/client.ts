@@ -259,16 +259,16 @@ class InMemoryStore {
       token: 'demo-candidate-2',
       candidate_name: 'Giulia Bianchi',
       candidate_email: 'giulia.bianchi@unibo.it',
-      scenario_id: 'valvola-v104',
+      scenario_id: 'packaging-p200',
       status: 'in_progress',
       started_at: tenMinutesAgo,
       submitted_at: null,
       telemetry: { blur_count: 1, paste_count: 0, time_spent_seconds: 600 },
       raw_answers: {
-        stockoutDay: 9,
-        downtimeDays: 5,
-        expeditedOrderQty: 200,
-        decisionMemo: 'Analisi iniziale completata. Si valuta lotto di emergenza...',
+        stockoutDay: 8,
+        downtimeDays: 7,
+        expeditedOrderQty: 250,
+        decisionMemo: 'Analisi iniziale completata. Si valuta lotto di emergenza astucci su blisteratrice...',
       },
       created_at: tenMinutesAgo,
     };
@@ -335,9 +335,25 @@ class InMemoryStore {
       created_at: eightMinutesAgo,
     };
 
+    const session4Id = '44444444-4444-4444-8444-444444444444';
+    const session4: AssessmentSession = {
+      id: session4Id,
+      token: 'demo-candidate-4',
+      candidate_name: 'Luca Moretti',
+      candidate_email: 'luca.moretti@polimi.it',
+      scenario_id: 'scheda-e501',
+      status: 'pending',
+      started_at: null,
+      submitted_at: null,
+      telemetry: { blur_count: 0, paste_count: 0, time_spent_seconds: 0 },
+      raw_answers: null,
+      created_at: new Date().toISOString(),
+    };
+
     this.sessions.set(session1Id, session1);
     this.sessions.set(session2Id, session2);
     this.sessions.set(session3Id, session3);
+    this.sessions.set(session4Id, session4);
     this.evaluations.set(evaluation3Id, evaluation3);
   }
 

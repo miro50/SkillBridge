@@ -753,17 +753,17 @@ export default function AziendeLandingPage() {
                       onChange={(e) => setRoleNeeded(e.target.value)}
                       className="w-full bg-slate-950 border border-slate-700 rounded-md px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
                     >
-                      <option value="Pianificatore della Produzione / Supply Chain">
-                        Pianificatore della Produzione / MRP Specialist
+                      <option value="Supply Chain & Operations Specialist (Modulo V-104)">
+                        Supply Chain & Operations Specialist (Modulo V-104)
                       </option>
-                      <option value="Supply Chain & Operations Specialist">
-                        Supply Chain & Operations Specialist (Scenario V-104)
+                      <option value="Pianificatore della Produzione & MRP Specialist (Modulo P-200)">
+                        Pianificatore della Produzione & MRP Specialist (Modulo P-200)
                       </option>
-                      <option value="Buyer Tecnico Meccanico">
-                        Buyer Tecnico / Gestione Fornitori Critici
+                      <option value="Buyer Tecnico & Procurement Specialist (Modulo E-501)">
+                        Buyer Tecnico & Procurement Specialist (Modulo E-501)
                       </option>
                       <option value="Junior Process & Continuous Improvement Engineer">
-                        Junior Process / Lean Continuous Improvement Engineer
+                        Junior Process & Continuous Improvement Engineer
                       </option>
                     </select>
                   </div>
