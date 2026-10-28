@@ -21,10 +21,12 @@ import {
   Lock,
   ChevronRight,
   Factory,
-  BookOpen
+  BookOpen,
+  FileSpreadsheet,
 } from 'lucide-react';
 import { SessionWithEvaluation, CompanyLead } from '@/lib/supabase/client';
 import { SCENARIO_CATALOG } from '@/lib/assessment/parametric';
+import { exportSessionsToCSV } from '@/lib/assessment/comparison';
 
 export default function AdminPage() {
   const [sessions, setSessions] = useState<SessionWithEvaluation[]>([]);
@@ -63,6 +65,31 @@ export default function AdminPage() {
   const [overrideScore, setOverrideScore] = useState<string>('');
   const [overrideNotes, setOverrideNotes] = useState<string>('');
   const [isSavingOverride, setIsSavingOverride] = useState<boolean>(false);
+
+  // Candidate Selection for Head-to-Head Comparison
+  const [selectedCandidateIds, setSelectedCandidateIds] = useState<string[]>([]);
+
+  const toggleCandidateSelection = (sessionId: string) => {
+    setSelectedCandidateIds((prev) =>
+      prev.includes(sessionId)
+        ? prev.filter((id) => id !== sessionId)
+        : prev.length < 3
+        ? [...prev, sessionId]
+        : prev
+    );
+  };
+
+  const handleExportAllCSV = () => {
+    const csv = exportSessionsToCSV(sessions);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `skillbridge-candidati-${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   // Fetch all sessions and leads
   const fetchSessions = async () => {
@@ -264,6 +291,15 @@ export default function AdminPage() {
             </button>
 
             <button
+              onClick={handleExportAllCSV}
+              className="px-3 py-2 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors text-xs flex items-center gap-1.5"
+              title="Esporta candidati in CSV"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="hidden sm:inline">Esporta CSV</span>
+            </button>
+
+            <button
               onClick={fetchSessions}
               disabled={loading}
               className="p-2 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors text-xs flex items-center gap-1.5"
@@ -409,6 +445,7 @@ export default function AdminPage() {
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-950/80 border-b border-slate-800 text-slate-400 uppercase font-mono text-[10px] tracking-wider">
                 <tr>
+                  <th className="py-3 px-3 w-10 text-center">Sel.</th>
                   <th className="py-3 px-4">Candidato</th>
                   <th className="py-3 px-4">Token & Link</th>
                   <th className="py-3 px-4">Stato</th>
@@ -421,7 +458,7 @@ export default function AdminPage() {
               <tbody className="divide-y divide-slate-800">
                 {loading && (
                   <tr>
-                    <td colSpan={7} className="py-8 text-center text-slate-400">
+                    <td colSpan={8} className="py-8 text-center text-slate-400">
                       <div className="flex items-center justify-center gap-2">
                         <RefreshCw className="w-4 h-4 animate-spin text-blue-500" />
                         <span>Caricamento sessioni in corso...</span>
@@ -432,7 +469,7 @@ export default function AdminPage() {
 
                 {!loading && filteredSessions.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="py-12 text-center text-slate-500 font-mono text-xs">
+                    <td colSpan={8} className="py-12 text-center text-slate-500 font-mono text-xs">
                       Nessun candidato trovato con i filtri correnti.
                     </td>
                   </tr>
@@ -447,7 +484,22 @@ export default function AdminPage() {
                         : evaluation?.total_score;
 
                     return (
-                      <tr key={session.id} className="hover:bg-slate-800/40 transition-colors">
+                      <tr
+                        key={session.id}
+                        className={`hover:bg-slate-800/40 transition-colors ${
+                          selectedCandidateIds.includes(session.id) ? 'bg-blue-950/20' : ''
+                        }`}
+                      >
+                        {/* Seleziona per confronto */}
+                        <td className="py-3.5 px-3 text-center">
+                          <input
+                            type="checkbox"
+                            checked={selectedCandidateIds.includes(session.id)}
+                            onChange={() => toggleCandidateSelection(session.id)}
+                            className="w-3.5 h-3.5 rounded bg-slate-950 border-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                            title="Seleziona per confronto"
+                          />
+                        </td>
                         {/* Candidato */}
                         <td className="py-3.5 px-4">
                           <div className="font-semibold text-white">{session.candidate_name}</div>
@@ -710,6 +762,41 @@ export default function AdminPage() {
           </div>
         </div>
       </main>
+
+      {/* Floating Candidate Comparison Action Bar */}
+      {selectedCandidateIds.length > 0 && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900/95 border border-slate-700 backdrop-blur-md px-5 py-3 rounded-xl shadow-2xl flex items-center gap-4 text-xs">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+            <span className="font-semibold text-white font-mono">
+              {selectedCandidateIds.length} candidat{selectedCandidateIds.length === 1 ? 'o' : 'i'} selezionat{selectedCandidateIds.length === 1 ? 'o' : 'i'} (max 3)
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {selectedCandidateIds.length >= 2 ? (
+              <Link
+                href={`/admin/confronta?ids=${selectedCandidateIds.join(',')}`}
+                className="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold flex items-center gap-1.5 shadow-sm transition-colors cursor-pointer"
+              >
+                <span>⚡ Confronta Testa a Testa</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
+            ) : (
+              <span className="text-slate-400 italic text-[11px]">
+                (Seleziona almeno 2 profili)
+              </span>
+            )}
+
+            <button
+              onClick={() => setSelectedCandidateIds([])}
+              className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors text-[11px] font-mono cursor-pointer"
+            >
+              Deseleziona
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Modal: Nuovo Invito Candidato */}
       {showInviteModal && (
