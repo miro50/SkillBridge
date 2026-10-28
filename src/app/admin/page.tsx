@@ -645,11 +645,11 @@ export default function AdminPage() {
               </h3>
             </div>
             <Link
-              href="/aziende"
+              href="/"
               target="_blank"
               className="text-xs text-blue-400 hover:text-blue-300 font-mono inline-flex items-center gap-1"
             >
-              <span>Vedi Landing Page Aziende</span>
+              <span>Vedi Landing Page</span>
               <ExternalLink className="w-3 h-3" />
             </Link>
           </div>

@@ -13,8 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SkillBridge | Candidate Test Runner",
-  description: "Piattaforma di validazione competenze tecniche senza CV",
+  title: "SkillBridge | Validazione Tecnica & Assunzione Ingegneri di Fabbrica",
+  description:
+    "Zero CV abbelliti. Assumi ingegneri Supply Chain, MRP, Buyer Tecnici e Process Lean testati su 20 scenari di fermo linea reali con video proctoring.",
 };
 
 export default function RootLayout({
@@ -25,9 +26,9 @@ export default function RootLayout({
   return (
     <html
       lang="it"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-zinc-950 text-zinc-100">{children}</body>
+      <body className="min-h-full flex flex-col bg-slate-50 text-slate-900">{children}</body>
     </html>
   );
 }
