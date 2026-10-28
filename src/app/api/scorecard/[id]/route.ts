@@ -29,10 +29,18 @@ export async function GET(
       );
     }
 
-    return NextResponse.json({
-      session,
-      evaluation,
-    });
+    // P3: Edge Caching for Completed Scorecards (5 min edge cache, 10 min stale-while-revalidate)
+    return NextResponse.json(
+      {
+        session,
+        evaluation,
+      },
+      {
+        headers: {
+          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+        },
+      }
+    );
   } catch (err: any) {
     console.error('[API scorecard/[id]] Error:', err);
     return NextResponse.json(

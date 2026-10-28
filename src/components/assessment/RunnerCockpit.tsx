@@ -74,6 +74,27 @@ export function RunnerCockpit({
   const [isPiPMinimized, setIsPiPMinimized] = useState<boolean>(false);
   const cockpitVideoRef = useRef<HTMLVideoElement | null>(null);
   const cockpitStreamRef = useRef<MediaStream | null>(null);
+  const latestSnapshotRef = useRef<string | null>(null);
+
+  // P1: Capture real webcam frame to canvas data URI
+  const captureWebcamSnapshot = useCallback((): string | null => {
+    try {
+      const video = cockpitVideoRef.current;
+      if (!video || video.readyState < 2 || video.videoWidth === 0) return null;
+      const canvas = document.createElement('canvas');
+      canvas.width = 320;
+      canvas.height = 240;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
+      ctx.drawImage(video, 0, 0, 320, 240);
+      const dataUri = canvas.toDataURL('image/jpeg', 0.5);
+      latestSnapshotRef.current = dataUri;
+      setSnapshotCount((prev) => prev + 1);
+      return dataUri;
+    } catch {
+      return null;
+    }
+  }, []);
 
   // Timer state (seconds)
   const [remainingSeconds, setRemainingSeconds] = useState<number>(initialRemainingSeconds);
@@ -199,6 +220,7 @@ export function RunnerCockpit({
       webcam_verified: isWebcamActive || proctoringMode === 'simulated',
       proctoring_active: isWebcamActive || proctoringMode === 'simulated',
       proctoring_snapshots_count: snapshotCount,
+      proctoring_snapshot: latestSnapshotRef.current || undefined,
       time_spent_seconds: elapsedSeconds,
     };
   }, [
@@ -368,8 +390,12 @@ export function RunnerCockpit({
   // Auto-Submit on Timer Expiration
   const handleAutoSubmit = useCallback(() => {
     if (isSubmitting) return;
+    captureWebcamSnapshot();
+    if (latestSnapshotRef.current) {
+      telemetryRef.current.proctoring_snapshot = latestSnapshotRef.current;
+    }
     onSubmit(answersRef.current, telemetryRef.current);
-  }, [isSubmitting, onSubmit]);
+  }, [isSubmitting, onSubmit, captureWebcamSnapshot]);
 
   // 1-Second Timer Tick
   useEffect(() => {
@@ -394,6 +420,10 @@ export function RunnerCockpit({
   const performSave = useCallback(async () => {
     setSaveStatus('saving');
     try {
+      captureWebcamSnapshot();
+      if (latestSnapshotRef.current) {
+        telemetryRef.current.proctoring_snapshot = latestSnapshotRef.current;
+      }
       if (typeof window !== 'undefined') {
         localStorage.setItem(
           `skillbridge_draft_${session.token}`,
@@ -411,7 +441,7 @@ export function RunnerCockpit({
       console.warn('[AutoSave] Draft sync error:', err);
       setSaveStatus('dirty');
     }
-  }, [session.token, onSaveDraft]);
+  }, [session.token, onSaveDraft, captureWebcamSnapshot]);
 
   useEffect(() => {
     const autoSaveInterval = setInterval(() => {
@@ -423,6 +453,10 @@ export function RunnerCockpit({
 
   const handleManualSubmit = () => {
     setIsSubmitModalOpen(false);
+    captureWebcamSnapshot();
+    if (latestSnapshotRef.current) {
+      telemetryRef.current.proctoring_snapshot = latestSnapshotRef.current;
+    }
     onSubmit(answersRef.current, telemetryRef.current);
   };
 

@@ -452,17 +452,31 @@ export function ScorecardView({ session, evaluation }: ScorecardViewProps) {
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
             {/* Proctoring Video Status */}
-            <div className="p-2.5 rounded bg-white border border-slate-200 col-span-2 sm:col-span-1">
-              <span className="text-[10px] text-slate-500 block uppercase font-sans">
-                Monitoraggio Video
-              </span>
-              <span className="font-semibold text-emerald-700 flex items-center mt-1">
-                <Video className="w-3.5 h-3.5 mr-1 text-emerald-600" />
-                {isWebcamVerified ? 'Webcam Attiva &amp; Viso Presidiato' : 'Proctoring Standard'}
-              </span>
-              <span className="text-[9px] text-slate-400 block mt-0.5 font-sans">
-                Nessun dispositivo ausiliario rilevato
-              </span>
+            <div className="p-2.5 rounded bg-white border border-slate-200 col-span-2 sm:col-span-1 flex flex-col justify-between">
+              <div>
+                <span className="text-[10px] text-slate-500 block uppercase font-sans">
+                  Monitoraggio Video
+                </span>
+                <span className="font-semibold text-emerald-700 flex items-center mt-1">
+                  <Video className="w-3.5 h-3.5 mr-1 text-emerald-600" />
+                  {isWebcamVerified ? 'Webcam Attiva &amp; Viso Presidiato' : 'Proctoring Standard'}
+                </span>
+                <span className="text-[9px] text-slate-400 block mt-0.5 font-sans">
+                  Nessun dispositivo ausiliario rilevato
+                </span>
+              </div>
+              {session.telemetry?.proctoring_snapshot && (
+                <div className="mt-2 pt-2 border-t border-slate-100 flex items-center space-x-2">
+                  <img
+                    src={session.telemetry.proctoring_snapshot as string}
+                    alt="Proctoring Frame"
+                    className="w-12 h-9 rounded object-cover border border-emerald-400"
+                  />
+                  <span className="text-[9px] text-emerald-700 font-bold font-mono">
+                    ● FRAME REGISTRATO
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Copy / Paste Attempts */}

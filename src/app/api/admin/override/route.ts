@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { updateEvaluationOverride } from '@/lib/supabase/client';
 
 function isAuthorized(request: NextRequest): boolean {
@@ -43,6 +44,14 @@ export async function POST(request: NextRequest) {
         { error: 'Valutazione non trovata per la sessione indicata' },
         { status: 404 }
       );
+    }
+
+    // P3: Invalidate Edge Cache immediately on reviewer override
+    try {
+      revalidatePath(`/scorecard/${sessionId}`);
+      revalidatePath(`/api/scorecard/${sessionId}`);
+    } catch {
+      // Ignored in non-prerendered dynamic contexts
     }
 
     return NextResponse.json({

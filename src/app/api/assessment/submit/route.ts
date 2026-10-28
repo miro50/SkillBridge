@@ -9,8 +9,17 @@ import { generateScenarioFromToken } from '@/lib/assessment/parametric';
 import { evaluateDeterministic } from '@/lib/assessment/deterministic';
 import { evaluateSemantic } from '@/lib/assessment/gemini-evaluator';
 import { dispatchFounderAlert } from '@/lib/notifications/webhook';
+import { enforceRateLimit } from '@/lib/security/rate-limiter';
 
 export async function POST(request: NextRequest) {
+  // P2: Rate Limit Protection (Max 10 submissions / min per IP)
+  const rateLimitBlock = enforceRateLimit(request, {
+    maxRequests: 10,
+    windowSeconds: 60,
+    actionName: 'assessment-submit',
+  });
+  if (rateLimitBlock) return rateLimitBlock;
+
   try {
     const body = await request.json();
     const { token, rawAnswers, telemetry } = body;

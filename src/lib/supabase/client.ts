@@ -19,6 +19,7 @@ export interface SessionTelemetry {
   webcam_verified?: boolean;
   proctoring_active?: boolean;
   proctoring_snapshots_count?: number;
+  proctoring_snapshot?: string;
   fullscreen_exits?: number;
   cheat_events?: Array<{ type: string; timestamp: string; message: string }>;
   [key: string]: unknown;

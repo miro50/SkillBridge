@@ -1,7 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { saveDraft } from '@/lib/supabase/client';
+import { enforceRateLimit } from '@/lib/security/rate-limiter';
 
 export async function POST(request: NextRequest) {
+  // P2: Rate Limit Protection (Max 30 save heartbeats / min per IP)
+  const rateLimitBlock = enforceRateLimit(request, {
+    maxRequests: 30,
+    windowSeconds: 60,
+    actionName: 'assessment-save',
+  });
+  if (rateLimitBlock) return rateLimitBlock;
+
   try {
     const body = await request.json();
     const { token, rawAnswers, telemetry } = body;
